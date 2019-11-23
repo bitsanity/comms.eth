@@ -16,7 +16,7 @@ interface ERC20 {
 
 contract Resolver {
 
-  event AddrChanged( bytes32 indexed node, address a, address sender );
+  event AddrChanged( bytes32 indexed node, address a );
   event PubkeyChanged( bytes32 indexed node, bytes32 x, bytes32 y );
 
   struct PubKey {
@@ -45,9 +45,7 @@ contract Resolver {
 
   function setAddr( bytes32 _node, address _newAddr ) external owns(_node) {
     addr[_node] = _newAddr;
-    emit AddrChanged( _node,
-                      theENS.owners(_node), //_newAddr,
-                      msg.sender );
+    emit AddrChanged( _node, _newAddr );
   }
 
   function pubkey( bytes32 _node ) external view
