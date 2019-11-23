@@ -1,0 +1,11 @@
+What is a Topic
+
+A topic is a (ensname, address) tuple that is made well-known in the dapp.
+Anyone can post to a topic. The app makes it easy to browse and use topics.
+
+No payment of ether is required to register a name. The cost to the user is
+merely the cost of gas for the Ethereum transaction.
+
+Creating a topic is payable. This is intended to provide some small deterrent
+to abuse.
+
