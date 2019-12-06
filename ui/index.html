@@ -1,0 +1,293 @@
+<html>
+<head>
+  <title>BLABB.ETH</title>
+
+  <meta charset="UTF-8"/>
+  <link id="PageSkin" rel="stylesheet" type="text/css" href="skins/plain.css"/>
+
+  <script type="text/javascript" src="libs/web3.min.js"></script>
+  <script type="text/javascript" src="libs/keythereum.min.js"></script>
+  <script type="text/javascript" src="libs/elliptic.browserify.js"></script>
+  <script type="text/javascript" src="libs/ecies-parity.browserify.js"></script>
+  <script type="text/javascript"
+    src="libs/eth-ens-namehash.browserify.js"></script>
+
+  <script>
+    var EC = require('elliptic').ec;
+    var elliptic = new EC( 'secp256k1' );
+
+    var nameash = require('eth-ens-namehash');
+  </script>
+
+  <script type="text/javascript" src="scripts/misc.js"></script>
+  <script type="text/javascript" src="scripts/tabs.js"></script>
+  <script type="text/javascript" src="scripts/settings.js"></script>
+  <script type="text/javascript" src="scripts/view.js"></script>
+  <script type="text/javascript" src="scripts/post.js"></script>
+  <script type="text/javascript" src="scripts/about.js"></script>
+  <script type="text/javascript" src="scripts/language.js"></script>
+  <script type="text/javascript" src="scripts/Ethereum.js"></script>
+</head>
+<body>
+
+<table width=100%>
+  <tr>
+    <td width=50% />
+    <td width=50% align="right">
+      <span id="SkinLabel" class="fieldname"></span>
+      <select id="SkinCB" class="data" onchange="setSkin();">
+        <option value="skins/plain.css">plain</option>
+        <option value="skins/bogus.css">bogus</option>
+      </select>
+      &nbsp;&nbsp;
+      <span id="LanguageLabel" class="fieldname">&nbsp;</span>
+      <select id="LanguageCB" class="data" onchange="setLabels();">
+        <option value="English">English</option>
+        <option value="Swedish">Svenska</option>
+      </select>
+    </td>
+  </tr>
+</table>
+
+<div class="tab">
+<button class="tablinks" id="SettingsTabButton"
+  onclick="openTab(event, 'Settings');doSettings();" />
+<button class="tablinks" id="ViewTabButton"
+  onclick="openTab(event, 'View');doView();" />
+<button class="tablinks" id="PostTabButton"
+  onclick="openTab(event, 'Post');doPost();" />
+<button class="tablinks" id="AboutTabButton"
+  onclick="openTab(event, 'About');doAbout();" />
+</div>
+
+<div id="Settings" class="tabcontent">
+<table>
+  <tr>
+    <td class="fieldname" align=right><div id="AddrLabel"></div></td>
+    <td><select id="AddressesCB" class="data"
+                onchange="selectedAddress()"/></td>
+  </tr>
+  <tr>
+    <td class="fieldname"
+      align=right><div id="HandleLabel" class="fieldname"></div>
+    </td>
+    <td>
+      <select id="HandleCB" class="data"></select>&nbsp;
+      <span id="dAppNamespace" class="units"></span>
+    </td>
+  </tr>
+  <tr>
+    <td class="fieldname" align=right><div id="GasPriceLabel"/></td>
+    <td>
+      <input id="GasTextField" class="data"
+             type=text size=5 />&nbsp;<span id="GasPriceUnits" class="units" />
+    </td>
+  </tr>
+  <tr>
+    <td class="fieldname" align=right><div id="LastBlocksLabel"/></td>
+    <td><input id="LastBlocksField" class="data"
+      type=text size=10 value="1000000"/></td>
+  </tr>
+</table>
+<table>
+  <tr>
+    <td>
+      <fieldset>
+        <legend id="GetNameLegend" class="legend"></legend>
+
+        <table>
+        <tr>
+          <td class="fieldname" align=right>
+            <div id="NameToGetLB"/>
+          </td>
+          <td colspan=2>
+            <input id="LabelField" class="data" type=text size=25>&nbsp;
+            <span id="dAppNamespace2" class="units"></span></td>
+        </tr>
+        <tr>
+          <td class="fieldname" align=right><div id="ForAddressLB"/></td>
+          <td colspan=2><div id="GetNameAddressValue" class="data"/></td>
+        </tr>
+        <tr>
+          <td class="fieldname" align=right><div id="ValueLB"/></td>
+          <td colspan=2>
+          <input id="GetHandleValueField" class="data"
+            type=text size=25 value="1 finney">
+          </td>
+        </tr>
+        <tr>
+          <td class="fieldname" align=right><div id="GasEstLB"/></td>
+          <td colspan=2><div id="GasEstVal"/></td>
+        </tr>
+        <tr>
+          <td/>
+          <td><button id="GetHandleButton" onclick="doGetHandle();"/></td>
+        </tr>
+        </table>
+
+      </fieldset>
+    </td>
+  </tr>
+</table>
+<table>
+  <tr>
+    <td>
+      <fieldset>
+        <legend id="GetTopicLegend" class="legend"></legend>
+        <table>
+        <tr>
+          <td class="fieldname" align=right>
+            <div id="TopicToGetLB"/>
+          </td>
+          <td colspan=2>
+            <input id="TopicField" class="data" type=text size=25>&nbsp;
+            <span id="dAppNamespace3" class="units"></span></td>
+        </tr>
+        <tr>
+          <td class="fieldname" align=right><div id="ForAddressLB2"/></td>
+          <td colspan=2><div id="GetTopicAddressValue" class="data"></div></td>
+        </tr>
+        <tr>
+          <td class="fieldname" align=right><div id="GetTopicValueLB"/></td>
+          <td colspan=2>
+          <input id="GetTopicValueField" class="data"
+            type=text size=25 value="1 finney">
+          </td>
+        </tr>
+        <tr>
+          <td class="fieldname" align=right><div id="TopicGasEstLB"/></td>
+          <td colspan=2><div id="TopicGasEstVal"/></td>
+        </tr>
+        <tr>
+          <td/>
+          <td><button id="GetTopicButton" onclick="doGetTopic();"/></td>
+        </tr>
+        </table>
+      </fieldset>
+    </td>
+  </tr>
+</table>
+</div>
+<div id="View" class="tabcontent">
+<table>
+  <tr>
+    <td class="fieldname" align=right><div id="SentToLabel"></div></td>
+    <td>
+      <input id="SentToInput" class="data" type=text size="42" />&nbsp;<span
+          id="NameAddressLabel" class="units"></span>
+    </td>
+  </tr>
+  <tr>
+    <td class="fieldname"
+      align=right><div id="TopicSelectLabel">&nbsp;</div></td>
+    <td>
+      <select id="ViewTopicsCB" class="data"></select>&nbsp;
+      <span id="dAppNamespaceView" class="units">&nbsp;</span>
+    </td>
+  </tr>
+  <tr>
+    <td class="fieldname" align=right><div id="FromLabel"></div></td>
+    <td>
+      <input id="FromAddressField" type=text class="data"
+        size="42"/>&nbsp;<span id="NameAddressLabel2" class="units"></span>
+    </td>
+  </tr>
+  <tr>
+    <td class="fieldname"><div id="KeywordsLabel"></div></td>
+    <td>
+      <input id="KeywordsField" class="data" type=text size=42 />
+    </td>
+  </tr>
+  <tr>
+    <th/>
+    <td>
+      <button id="SearchButton" onclick="doSearch();" />
+    </td>
+  </tr>
+  <tr>
+    <td class="fieldname" align=right
+        valign=top><div id="MessagesLabel"></div></td>
+    <td>
+      <select id="MessageList" multiple size=8 class="data"
+         onchange="messageSelected()"></select>
+    </td>
+  </tr>
+  <tr>
+    <td class="fieldname"
+       align=right valign=top><div id="ContentsLabel"></div></td>
+    <td>
+      <textarea id="MessageContentsTextArea" class="data"
+        rows=12 cols=76>&nbsp;</textarea>
+    </td>
+  </tr>
+  <tr>
+    <td/>
+    <td>
+      <input type="radio" name="ContentView" onclick="doRawHex()"
+        checked/><span id="BlackHexButton"></span>&nbsp;&nbsp;
+      <input type="radio" onclick="doRawUtf()"
+        name="ContentView"/><span id="BlackUtfButton"></span>&nbsp;&nbsp;
+      <input type="radio" onclick="doRedHex()"
+        name="ContentView"/><span id="RedHexButton"></span>&nbsp;&nbsp;
+      <input type="radio" onclick="doRedUtf()"
+        name="ContentView"/><span id="RedUtfButton"></span>
+    </td>
+  </tr>
+</table>
+</div>
+<div id="Post" class="tabcontent">
+<table>
+  <tr>
+    <td class="fieldname" align=right><div id="PostToTopicLabel"></div></td>
+    <td colspan=2>
+      <select id="PostToTopicCB" class="data"
+         onchange="postTopicSelected()"></select>&nbsp;
+      <span id="dAppNamespacePost" class="units"></span>&nbsp;
+    </td>
+  </tr>
+  <tr>
+    <td class="fieldname" align=right><div id="PostToAddressLabel"></div></td>
+    <td colspan=2>
+      <input id="PostToInput" class="data"
+        type=text size=42 onchange="postToChanged()" />&nbsp;
+      <span id="NameAddressLabel3" class="units"></span>
+    </td>
+  </tr>
+  <tr>
+    <td class="fieldname" align=right><div id="PostValueLB"></div></td>
+    <td><input id="PostValueField" class="data"
+      type=text size=25 value="0 wei"/></td>
+  </tr>
+  <tr>
+    <td class="fieldname" align=right
+      valign=top><div id="MessageToPostLabel"></div></td>
+    <td colspan=2>
+      <textarea id="MessageToPostTextArea" class="data"
+        rows=8 cols=76>&nbsp;</textarea>
+    </td>
+  </tr>
+  <tr>
+    <td class="fieldname" align=right><div id="EncryptedLabel"></div></td>
+    <td>
+      <input id="RadioNo" name="radio1" type=radio checked />&nbsp;<span id="NoLabel"></span>&nbsp;<input id="RadioYes" name="radio1" type=radio />&nbsp;<span id="YesLabel"></span>
+    </td>
+  </tr>
+  <tr>
+    <td/>
+    <td><button id="PostButton" onclick="doPostMessage();"/></td>
+  </tr>
+</table>
+</div>
+<div id="About" class="tabcontent">
+<textarea id="AboutTextArea" rows=30 cols=80 readonly></textarea>
+</div>
+
+<script type="text/javascript">
+  window.resizeTo( 900, 700 );
+  Ξconnect();
+  setLabels();
+</script>
+
+</body>
+</html>
+
