@@ -25,9 +25,18 @@ contract Registrar {
   event TopicRegistered( string topic, address indexed owner );
 
   ENS public theENS;
-  Resolver public myResolver;
+  Resolver public defaultResolver;
   bytes32 public myRootNode;
   address payable public beneficiary;
+
+  uint public namefee = 50 szabo;
+  uint public namekeyfee = 100 szabo;
+  uint public topicfee = 1 finney;
+
+  modifier isBeneficiary {
+    require( msg.sender == beneficiary );
+    _;
+  }
 
   function toNode( string memory _label ) internal view returns (bytes32) {
     bytes32 labelhash = keccak256( abi.encodePacked(_label) );
@@ -43,7 +52,6 @@ contract Registrar {
 
   function baseReg( string memory _label ) internal canChange(_label)
   returns (bytes32) {
-    require( msg.value > 0 );
     bytes32 labelhash = keccak256( abi.encodePacked(_label) );
     theENS.setSubnodeOwner( myRootNode, labelhash, address(this) );
     return labelhash;
@@ -51,8 +59,10 @@ contract Registrar {
 
   function registerLabel( string calldata _label, address _owner ) payable
   external {
+    require( msg.value >= namefee );
+
     bytes32 labelhash = baseReg( _label );
-    myResolver.setAddr( toNode(_label), _owner );
+    defaultResolver.setAddr( toNode(_label), _owner );
     theENS.setSubnodeOwner( myRootNode, labelhash, _owner );
     emit LabelRegistered( _label, _owner );
   }
@@ -61,14 +71,18 @@ contract Registrar {
                                 bytes32 _x,
                                 bytes32 _y,
                                 address _owner ) payable external {
+    require( msg.value >= namekeyfee );
+
     bytes32 labelhash = baseReg( _label );
-    myResolver.setPubkey( toNode(_label), _x, _y );
+    defaultResolver.setPubkey( toNode(_label), _x, _y );
     theENS.setSubnodeOwner( myRootNode, labelhash, _owner );
     emit LabelRegistered( _label, _owner );
   }
 
   function registerTopic( string calldata _topic, address _owner )
   payable external {
+    require( msg.value >= topicfee );
+
     bytes32 labelhash = baseReg( _topic );
     theENS.setSubnodeOwner( myRootNode, labelhash, _owner );
     emit TopicRegistered( _topic, _owner );
@@ -78,13 +92,36 @@ contract Registrar {
                 address _resolver,
                 bytes32 _node ) public {
     theENS = ENS( _ens );
-    myResolver = Resolver( _resolver );
+    defaultResolver = Resolver( _resolver );
     myRootNode = _node;
     beneficiary = msg.sender;
   }
 
-  // any donations of eth and erc20-compatible tokens gratefully accepted
-  function () payable external {}
+  function setNameFee( uint _newfee ) public isBeneficiary {
+    namefee = _newfee;
+  }
+
+  function setNameKeyFee( uint _newfee ) public isBeneficiary {
+    namekeyfee = _newfee;
+  }
+
+  function setTopicFee( uint _newfee ) public isBeneficiary {
+    topicfee = _newfee;
+  }
+
+  function changeBeneficiary( address payable _to ) external isBeneficiary {
+    beneficiary = _to;
+  }
+
+  function setResolver( address _newresolver ) external isBeneficiary {
+    defaultResolver = Resolver( _newresolver );
+  }
+
+  function changeDomainOwner( address payable _to ) external isBeneficiary {
+    theENS.setOwner( myRootNode, _to );
+  }
+
+  function () payable external {} // thanks!
 
   function sweepEther() external {
     beneficiary.transfer( address(this).balance );
@@ -93,11 +130,6 @@ contract Registrar {
   function sweepToken( address _erc20 ) external {
     ERC20 token = ERC20( _erc20 );
     token.transfer( beneficiary, token.balanceOf(beneficiary) );
-  }
-
-  function changeBeneficiary( address payable _to ) external {
-    require( msg.sender == beneficiary );
-    beneficiary = _to;
   }
 
 }

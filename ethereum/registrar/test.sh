@@ -88,24 +88,26 @@ echo should fail: register \"bob\" under node \"alice.eth\" without paying
 node cli.js 0 $REG registerLabel bob $BOGUS 0
 echo
 
-echo register label \"bob\" under node \"alice.eth\" paying 1 wei
-node cli.js 0 $REG registerLabel bob $TESTACCTA 1
+echo register label \"bob\" under node \"alice.eth\"
+node cli.js 0 $REG registerLabel bob $TESTACCTA 50000000000000
 echo
 
 echo should fail: someone else tries to register \"bob\"
-node cli.js 1 $REG registerLabel bob $TESTACCTB 1
+node cli.js 1 $REG registerLabel bob $TESTACCTB 50000000000000
 echo
 
 echo should fail: register \"charlene\" with a public key, without paying
 node cli.js 1 $REG registerLabelAndKey charlene $TESTPVTA $TESTPVTB $TESTACCTB 0
 echo
 
-echo register label \"charlene\" with a public key, paying 1 wei
-node cli.js 1 $REG registerLabelAndKey charlene $TESTPVTA $TESTPVTB $TESTACCTB 1
+echo register label \"charlene\" with a public key
+node cli.js 1 $REG registerLabelAndKey \
+  charlene $TESTPVTA $TESTPVTB $TESTACCTB 100000000000000
 echo
 
 echo should fail: someone else tries to register \"charlene\" with a public key
-node cli.js 0 $REG registerLabelAndKey charlene $TESTPVTB $TESTPVTA $TESTACCTA 1
+node cli.js 0 $REG registerLabelAndKey charlene \
+  $TESTPVTB $TESTPVTA $TESTACCTA 100000000000000
 echo
 
 echo should fail: try to register a new topic without paying
@@ -113,11 +115,11 @@ node cli.js 0 $REG registerTopic capricorn $TESTACCTB 0
 echo
 
 echo register a new topic
-node cli.js 0 $REG registerTopic capricorn $TESTACCTA 1
+node cli.js 0 $REG registerTopic capricorn $TESTACCTA 1000000000000000
 echo
 
 echo should fail: someone else tries to register the topic
-node cli.js 1 $REG registerTopic capricorn $TESTACCTB 1
+node cli.js 1 $REG registerTopic capricorn $TESTACCTB 1000000000
 echo
 
 echo send 0.1 test eth to our smart contract
@@ -131,6 +133,14 @@ node cli.js 0 $REG sweepToken $TOK
 pushd ../erc20mock
 node cli.js 0 $TOK events
 popd
+echo
+
+echo should fail: someone other than beneficiary tries to set a new Resolver
+node cli.js 1 $REG setResolver $TESTACCTB
+echo
+
+echo beneficiary sets new Resolver
+node cli.js 0 $REG setResolver "0x0123456789012345678901234567890123456789"
 echo
 
 echo change beneficiary

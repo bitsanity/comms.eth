@@ -1,32 +1,41 @@
 # comms.eth
-Encrypted and plain-text messages within simple Ethereum transfers.
+
+Encrypted and plain-text messages in simple Ethereum transfers. Point-to-point
+and broadcast-to-topic modes.
+
+> Cryptography Warning
+>
+> The ECIES implementation given here is solely based off Parity's implementation. This module offers no guarantees as to the security or validity of the implementation. Furthermore, this project is being actively developed and as such should not be used for highly sensitive information. --https://github.com/sigp/ecies-parity
 
 # Dependencies
 
-* developed in [NW](https://nwjs.io/) environment
+* developed with/for [NW](https://nwjs.io/) environment with a web3 provider
+  (e.g. geth) present.
+  
+* The dapp requires access to the user's private key in order to register a
+  public key and to enable the user to decrypt messages.
+
 * includes an unmodified copy of `web3.min.js` from
   [ethereum/web3.js](https://github.com/ethereum/web3.js/) under
   [LICENSE](https://github.com/ethereum/web3.js/blob/1.x/LICENSE):
-
-> This file is part of web3.js.
-> 
-> web3.js is free software: you can redistribute it and/or modify
-> it under the terms of the GNU Lesser General Public License as published by
-> the Free Software Foundation, either version 3 of the License, or
-> (at your option) any later version.
-> 
-> web3.js is distributed in the hope that it will be useful,
-> but WITHOUT ANY WARRANTY; without even the implied warranty of
-> MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> GNU Lesser General Public License for more details.
-> 
-> You should have received a copy of the GNU Lesser General Public License
-> along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
 
 * includes [browserify](https://github.com/browserify/browserify)'d copy of
   [danfinlay/eth-ens-namehash](https://github.com/danfinlay/eth-ens-namehash)
   as published via [NPM](https://www.npmjs.com/package/eth-ens-namehash) which
   further includes
   [idna-uts46-hx](https://www.npmjs.com/package/idna-uts46-hx) and
-  and [js-sha](https://www.npmjs.com/package/js-sha3) NPM modules.
+  and [js-sha](https://www.npmjs.com/package/js-sha3).
+
+* includes `keythereum.min.js` from the
+  [ethereumjs/keythereum](https://github.com/ethereumjs/keythereum) project
+  under
+  [MIT LICENSE](https://github.com/ethereumjs/keythereum/blob/master/LICENSE)
+
+* includes `elliptic.min.js` from the
+  [indutny/elliptic](https://github.com/indutny/elliptic) project under
+  [MIT LICENSE](https://github.com/indutny/elliptic#license)
+
+* includes browserified 'ecies-parity' from the
+  [sigp/ecies-parity](https://github.com/sigp/ecies-parity) project under 
+  [MIT LICENSE](https://github.com/sigp/ecies-parity/blob/master/LICENSE)
 

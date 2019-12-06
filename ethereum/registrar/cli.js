@@ -54,7 +54,8 @@ const cmds =
    'registerTopic',
    'sweepEther',
    'sweepToken',
-   'changeBeneficiary'
+   'changeBeneficiary',
+   'setResolver'
   ];
 
 function usage() {
@@ -69,7 +70,8 @@ function usage() {
      '\tregisterTopic <string> <address> <value> |\n',
      '\tsweepEther |\n',
      '\tsweepToken |\n',
-     '\tchangeBeneficiary <address> |\n'
+     '\tchangeBeneficiary <address> |\n',
+     '\tsetResolver <address> |\n'
   );
 }
 
@@ -138,8 +140,8 @@ web3.eth.getAccounts().then( (res) => {
         } )
         .catch( err => { console.log(err.toString()) } );
 
-        con.methods.myResolver().call().then( (res) => {
-          console.log( "myResolver = ", res )
+        con.methods.defaultResover().call().then( (res) => {
+          console.log( "defaultResover = ", res )
         } )
         .catch( err => { console.log(err.toString()) } );
 
@@ -164,10 +166,6 @@ web3.eth.getAccounts().then( (res) => {
         let label = process.argv[5];
         let owner = process.argv[6];
         let amt = process.argv[7];
-
-        console.log( 'registerLabel:\n\tlabel: ' + label +
-                     '\n\towner: ' + owner +
-                     '\n\tamt: ' + amt );
 
         con.methods.registerLabel( label, owner )
         .send( {from: eb, value: amt, gas: 500000, gasPrice: MYGASPRICE} )
@@ -216,6 +214,13 @@ web3.eth.getAccounts().then( (res) => {
       {
         let addr = process.argv[5];
         con.methods.changeBeneficiary( addr )
+        .send( {from: eb, gas: 100000, gasPrice: MYGASPRICE} )
+        .catch( err => { console.log(err.toString()) } );
+      }
+      if (cmd == 'setResolver')
+      {
+        let addr = process.argv[5];
+        con.methods.setResolver( addr )
         .send( {from: eb, gas: 100000, gasPrice: MYGASPRICE} )
         .catch( err => { console.log(err.toString()) } );
       }
