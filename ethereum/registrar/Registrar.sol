@@ -4,6 +4,7 @@ pragma solidity ^0.5.0;
 
 interface ENS {
   function owner( bytes32 _node ) external view returns (address);
+  function setOwner( bytes32 _node, address _owner ) external;
   function setSubnodeOwner( bytes32 _node, bytes32 _label, address _owner )
     external;
 }

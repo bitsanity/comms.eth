@@ -140,8 +140,8 @@ web3.eth.getAccounts().then( (res) => {
         } )
         .catch( err => { console.log(err.toString()) } );
 
-        con.methods.defaultResover().call().then( (res) => {
-          console.log( "defaultResover = ", res )
+        con.methods.defaultResolver().call().then( (res) => {
+          console.log( "defaultResolver = ", res )
         } )
         .catch( err => { console.log(err.toString()) } );
 
