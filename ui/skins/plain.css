@@ -58,3 +58,14 @@ td {
   font-family: monospace;
   color: darkgreen;
 }
+
+.hyperlink {
+  color: darkblue;
+  text-decoration: underline;
+  font-size: small;
+}
+
+.redtext {
+  color: darkred;
+}
+

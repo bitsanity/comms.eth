@@ -1,32 +1,38 @@
 <html>
 <head>
   <title>BLABB.ETH</title>
-
   <meta charset="UTF-8"/>
   <link id="PageSkin" rel="stylesheet" type="text/css" href="skins/plain.css"/>
 
+  <!-- 3RD PARTY LIBS -->
   <script type="text/javascript" src="libs/web3.min.js"></script>
   <script type="text/javascript" src="libs/keythereum.min.js"></script>
   <script type="text/javascript" src="libs/elliptic.browserify.js"></script>
-  <script type="text/javascript" src="libs/ecies-parity.browserify.js"></script>
+  <script type="text/javascript" src="libs/ecies-parity.browser.js"></script>
   <script type="text/javascript"
     src="libs/eth-ens-namehash.browserify.js"></script>
-
   <script>
     var EC = require('elliptic').ec;
     var elliptic = new EC( 'secp256k1' );
-
-    var nameash = require('eth-ens-namehash');
+    var namehash = require('eth-ens-namehash');
+    var ecies = require('ecies-parity');
+    var secp256k1 = require('secp256k1');
   </script>
 
-  <script type="text/javascript" src="scripts/misc.js"></script>
-  <script type="text/javascript" src="scripts/tabs.js"></script>
-  <script type="text/javascript" src="scripts/settings.js"></script>
+  <!-- VIEW -->
   <script type="text/javascript" src="scripts/view.js"></script>
-  <script type="text/javascript" src="scripts/post.js"></script>
-  <script type="text/javascript" src="scripts/about.js"></script>
-  <script type="text/javascript" src="scripts/language.js"></script>
-  <script type="text/javascript" src="scripts/Ethereum.js"></script>
+  <script type="text/javascript" src="scripts/language/english.js"></script>
+  <script type="text/javascript" src="scripts/language/swedish.js"></script>
+
+  <!-- CONTROLLERS -->
+  <script type="text/javascript" src="scripts/controller.about.js"></script>
+  <script type="text/javascript" src="scripts/controller.loadkey.js"></script>
+  <script type="text/javascript" src="scripts/controller.post.js"></script>
+  <script type="text/javascript" src="scripts/controller.settings.js"></script>
+  <script type="text/javascript" src="scripts/controller.view.js"></script>
+
+  <!-- MODEL -->
+  <script type="text/javascript" src="scripts/model.js"></script>
 </head>
 <body>
 
@@ -50,12 +56,14 @@
 </table>
 
 <div class="tab">
-<button class="tablinks" id="SettingsTabButton"
-  onclick="openTab(event, 'Settings');doSettings();" />
 <button class="tablinks" id="ViewTabButton"
   onclick="openTab(event, 'View');doView();" />
 <button class="tablinks" id="PostTabButton"
   onclick="openTab(event, 'Post');doPost();" />
+<button class="tablinks" id="SettingsTabButton"
+  onclick="openTab(event, 'Settings');doSettings();" />
+<button class="tablinks redtext" id="LoadKeyTabButton"
+  onclick="openTab(event, 'LoadKey');doLoadKey();" />
 <button class="tablinks" id="AboutTabButton"
   onclick="openTab(event, 'About');doAbout();" />
 </div>
@@ -79,9 +87,15 @@
   <tr>
     <td class="fieldname" align=right><div id="GasPriceLabel"/></td>
     <td>
-      <input id="GasTextField" class="data"
-             type=text size=5 />&nbsp;<span id="GasPriceUnits" class="units" />
+      <input id="GasTextField" class="data" type=text size=5 />&nbsp;
+      <span id="GasPriceUnits" class="units" />
     </td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td><div id="EthGasStationLink"
+             class="hyperlink"
+             onclick="window.open('https://ethgasstation.info', true)" />
   </tr>
   <tr>
     <td class="fieldname" align=right><div id="LastBlocksLabel"/></td>
@@ -112,7 +126,7 @@
           <td class="fieldname" align=right><div id="ValueLB"/></td>
           <td colspan=2>
           <input id="GetHandleValueField" class="data"
-            type=text size=25 value="1 finney">
+            type=text size=25 value="500 szabo">
           </td>
         </tr>
         <tr>
@@ -151,7 +165,7 @@
           <td class="fieldname" align=right><div id="GetTopicValueLB"/></td>
           <td colspan=2>
           <input id="GetTopicValueField" class="data"
-            type=text size=25 value="1 finney">
+            type=text size=25 value="10 finney">
           </td>
         </tr>
         <tr>
@@ -181,7 +195,8 @@
     <td class="fieldname"
       align=right><div id="TopicSelectLabel">&nbsp;</div></td>
     <td>
-      <select id="ViewTopicsCB" class="data"></select>&nbsp;
+      <select id="ViewTopicsCB" class="data"
+        onchange="viewTopicSelected()"></select>&nbsp;
       <span id="dAppNamespaceView" class="units">&nbsp;</span>
     </td>
   </tr>
@@ -223,14 +238,12 @@
   <tr>
     <td/>
     <td>
-      <input type="radio" name="ContentView" onclick="doRawHex()"
+      <input type="radio" id="RawHexRB" name="ContentView" onclick="doRawHex()"
         checked/><span id="BlackHexButton"></span>&nbsp;&nbsp;
       <input type="radio" onclick="doRawUtf()"
         name="ContentView"/><span id="BlackUtfButton"></span>&nbsp;&nbsp;
-      <input type="radio" onclick="doRedHex()"
-        name="ContentView"/><span id="RedHexButton"></span>&nbsp;&nbsp;
-      <input type="radio" onclick="doRedUtf()"
-        name="ContentView"/><span id="RedUtfButton"></span>
+      <input type="radio" onclick="doRedUtf()" name="ContentView"/>
+      <span id="RedUtfButton" class="redtext"></span>
     </td>
   </tr>
 </table>
@@ -281,11 +294,28 @@
 <div id="About" class="tabcontent">
 <textarea id="AboutTextArea" rows=30 cols=80 readonly></textarea>
 </div>
+<div id="LoadKey" class="tabcontent">
+<table>
+<tr>
+  <td><div id="LoadKeyLabel"></div></td>
+</tr>
+<tr>
+  <td>
+    <textarea id="LoadKeyTextArea" class="data"
+      rows=8 cols=85 wrap="hard"></textarea>
+  </td>
+</tr>
+<tr>
+  <td><button id="LoadGethKeyButton" onclick="doLoadGethKey();"/></td>
+</tr>
+</table>
+</div>
 
 <script type="text/javascript">
-  window.resizeTo( 900, 700 );
+  window.resizeTo( 850, 700 );
   Ξconnect();
   setLabels();
+  doSettings();
 </script>
 
 </body>

@@ -1,206 +1,274 @@
-// local store: [ { hash, block from to input, fromname, pubkeyxy } ]
-var MessageTable = [];
+// I18N
 
-var viewRsvToAddr = '';
-var viewRsvFromAddr = '';
+var STRINGS = {};
+var LANG = "";
 
-function doView() {
-  document.getElementById( "SentToInput" ).value =
-    document.getElementById( "AddressesCB" ).value;
-  viewToChanged();
+function setLabels()
+{
+  LANG = document.getElementById( "LanguageCB" ).value;
 
-  ΞlistTopics( topicsRetrievedCallback );
+  // HEADER
+
+  document.getElementById("SkinLabel").innerHTML =
+    STRINGS[LANG].SkinLabel;
+
+  document.getElementById("LanguageLabel").innerHTML =
+    STRINGS[LANG].LanguageLabel;
+
+  document.getElementById( "SettingsTabButton" ).innerHTML =
+    STRINGS[LANG].SettingsTabLabel;
+
+  document.getElementById( "ViewTabButton" ).innerHTML =
+    STRINGS[LANG].ViewTabLabel;
+
+  document.getElementById( "PostTabButton" ).innerHTML =
+    STRINGS[LANG].PostTabLabel;
+
+  document.getElementById( "AboutTabButton" ).innerHTML =
+    STRINGS[LANG].AboutTabLabel;
+
+  document.getElementById( "LoadKeyTabButton" ).innerHTML =
+    STRINGS[LANG].LoadKeyTabLabel;
+
+  // SETTINGS
+
+  document.getElementById( "AddrLabel" ).innerHTML =
+    STRINGS[LANG].UseAddressLabel;
+
+  document.getElementById( "HandleLabel" ).innerHTML =
+    STRINGS[LANG].UseHandleLabel;
+
+  document.getElementById( "dAppNamespace" ).innerHTML =
+    STRINGS[LANG].DAppNamespace;
+  document.getElementById( "dAppNamespace2" ).innerHTML =
+    STRINGS[LANG].DAppNamespace;
+  document.getElementById( "dAppNamespace3" ).innerHTML =
+    STRINGS[LANG].DAppNamespace;
+
+  document.getElementById( "GetNameLegend" ).innerHTML =
+    STRINGS[LANG].GetNameLegend;
+
+  document.getElementById( "NameToGetLB" ).innerHTML =
+    STRINGS[LANG].NameToGetLB;
+
+  document.getElementById( "ForAddressLB" ).innerHTML =
+    STRINGS[LANG].ForAddressLB;
+  document.getElementById( "ForAddressLB2" ).innerHTML =
+    STRINGS[LANG].ForAddressLB;
+
+  document.getElementById( "ValueLB" ).innerHTML =
+    STRINGS[LANG].ValueLB;
+
+  document.getElementById( "GasEstLB" ).innerHTML =
+    STRINGS[LANG].GasEstLB;
+
+  document.getElementById( "GasEstVal" ).innerHTML =
+    STRINGS[LANG].GasEstVal;
+
+  document.getElementById( "GetHandleButton" ).innerHTML =
+    STRINGS[LANG].GetHandleButtonCommand;
+
+  document.getElementById( "GasPriceLabel" ).innerHTML =
+    STRINGS[LANG].GasPriceLabel;
+
+  document.getElementById( "GasPriceUnits" ).innerHTML =
+    STRINGS[LANG].GasPriceUnits;
+
+  document.getElementById( "EthGasStationLink" ).innerHTML =
+    STRINGS[LANG].EthGasStationLink;
+
+  document.getElementById( "LastBlocksLabel" ).innerHTML =
+    STRINGS[LANG].LastBlocksLabel;
+
+  // VIEW
+
+  document.getElementById( "SentToLabel" ).innerHTML =
+    STRINGS[LANG].SentToLabel;
+
+  document.getElementById( "NameAddressLabel" ).innerHTML =
+    STRINGS[LANG].NameAddressLabel;
+
+  document.getElementById( "TopicSelectLabel" ).innerHTML =
+    STRINGS[LANG].TopicSelectLabel;
+
+  document.getElementById( "dAppNamespaceView" ).innerHTML =
+    STRINGS[LANG].DAppNamespace;
+
+  document.getElementById( "FromLabel" ).innerHTML = STRINGS[LANG].FromLabel;
+
+  document.getElementById( "NameAddressLabel2" ).innerHTML =
+    STRINGS[LANG].NameAddressLabel;
+
+  document.getElementById( "KeywordsLabel" ).innerHTML =
+    STRINGS[LANG].KeywordsLabel;
+
+  document.getElementById( "SearchButton" ).innerHTML =
+    STRINGS[LANG].SearchButtonCommand;
+
+  document.getElementById( "MessagesLabel" ).innerHTML =
+    STRINGS[LANG].MessagesLabel;
+
+  document.getElementById( "ContentsLabel" ).innerHTML =
+    STRINGS[LANG].ContentsLabel;
+
+  document.getElementById( "BlackHexButton" ).innerHTML =
+    STRINGS[LANG].BlackHexButton;
+
+  document.getElementById( "BlackUtfButton" ).innerHTML =
+    STRINGS[LANG].BlackUtfButton;
+
+  document.getElementById( "RedUtfButton" ).innerHTML =
+    STRINGS[LANG].RedUtfButton;
+
+  // POST
+
+  document.getElementById( "PostToTopicLabel" ).innerHTML =
+    STRINGS[LANG].PostToTopicLabel;
+
+  document.getElementById( "PostToAddressLabel" ).innerHTML =
+    STRINGS[LANG].PostToAddressLabel;
+
+  document.getElementById( "dAppNamespacePost" ).innerHTML =
+    STRINGS[LANG].DAppNamespace;
+
+  document.getElementById( "NameAddressLabel3" ).innerHTML =
+    STRINGS[LANG].NameAddressLabel;
+
+  document.getElementById( "PostValueLB" ).innerHTML =
+    STRINGS[LANG].PostValueLB;
+
+  document.getElementById( "MessageToPostLabel" ).innerHTML =
+    STRINGS[LANG].MessageToPostLabel;
+
+  document.getElementById( "EncryptedLabel" ).innerHTML =
+    STRINGS[LANG].EncryptedLabel;
+
+  document.getElementById( "NoLabel" ).innerHTML = STRINGS[LANG].NoLabel;
+  document.getElementById( "YesLabel" ).innerHTML = STRINGS[LANG].YesLabel;
+
+  document.getElementById( "PostButton" ).innerHTML =
+    STRINGS[LANG].PostButtonCommand;
+
+  document.getElementById( "GetTopicLegend" ).innerHTML =
+    STRINGS[LANG].GetTopicLegend;
+
+  document.getElementById( "TopicToGetLB" ).innerHTML =
+    STRINGS[LANG].TopicToGetLB;
+
+  document.getElementById( "GetTopicValueLB" ).innerHTML =
+    STRINGS[LANG].ValueLB;
+
+  document.getElementById( "TopicGasEstLB" ).innerHTML =
+    STRINGS[LANG].GasEstLB;
+
+  document.getElementById( "TopicGasEstVal" ).innerHTML =
+    STRINGS[LANG].TopicGasEstVal;
+
+  document.getElementById( "GetTopicButton" ).innerHTML =
+    STRINGS[LANG].NewTopicCommand;
+
+  // About
+  document.getElementById( "AboutTextArea").value = STRINGS[LANG].AboutHTML;
+
+  // Load Key
+  document.getElementById( "LoadKeyLabel" ).innerHTML =
+    STRINGS[LANG].LoadKeyLabel;
+
+  document.getElementById( "LoadGethKeyButton" ).innerHTML =
+    STRINGS[LANG].LoadGethKeyButton;
 }
 
-function viewFromChanged() {
-  let fromaddr = document.getElementById( "FromAddressField" ).value;
-  if (fromaddr && fromaddr.toLowerCase().endsWith('.eth'))
-    ΞnameToAddress( fromaddr, viewFromResolved );
-}
+// MISCELLANEOUS VIEW-LAYER STUFF
 
-function viewFromResolved( val ) {
-  viewRsvFromAddr = '';
-}
+function openTab(evt, tabName)
+{
+  // Declare all variables
+  var i, tabcontent, tablinks;
 
-function viewToChanged() {
-  let toaddr = document.getElementById( "SentToInput" ).value;
-  if (toaddr && toaddr.toLowerCase().endsWith('.eth'))
-    ΞnameToAddress( toaddr, viewToResolved );
-}
-
-function viewToResolved( res ) {
-  viewRsvToAddr = res;
-}
-
-function messageSelected() {
-  let firstix = document.getElementById( "MessageList" ).selectedIndex();
-  let area = document.getElementById( "MessageContentsTextArea" );
-
-  if (firstix < 0) {
-    area.value = "";
-    return;
+  // Get all elements with class="tabcontent" and hide them
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
   }
 
-  area.value = MessageTable[firstix].input;
-}
-
-function topicsRetrievedCallback( topics ) {
-  let topicsCB = document.getElementById( "ViewTopicsCB" );
-  removeAll( topicsCB );
-
-  for (ii = 0; ii < topics.length; ii++) {
-    let op = document.createElement("option");
-    op.text = topics[ii];
-    topicsCB.add( op );
+  // Get all elements with class="tablinks" and remove the class "active"
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
   }
 
-  topicsCB = document.getElementById( "PostToTopicCB" );
-  removeAll( topicsCB );
-
-  for (ii = 0; ii < topics.length; ii++) {
-    let op = document.createElement("option");
-    op.text = topics[ii];
-    topicsCB.add( op );
-  }
+  // Show the current tab, and add an "active" class to the button that
+  // opened the tab
+  document.getElementById(tabName).style.display = "block";
+  evt.currentTarget.className += " active";
 }
 
-function doSearch() {
-  let blocks = parseInt( document.getElementById("LastBlocksLabel") );
-  let toaddr = document.getElementById( "SentToInput" ).value;
-  let totopic = document.getElementById( "ViewTopicsCB" ).value +
-                  STRINGS[LANG].DAppNamespace;
-  let fromaddr = document.getElementById( "FromAddressField" ).value;
-  let keywords = document.getElementById( "KeywordsField" ).value;
- 
-  ΞretrieveMessages(
-    blocks,
-    (viewRsvToAddr && viewRsvToAddr.length > 0) ? viewRsvToAddr : toaddr,
-    totopic,
-    (viewRsvFromAddr && viewRsvFromAddr.length > 0) ? viewRsvFromAddr
-                                                    : fromaddr,
-    keywords,
-    retrieveMessagesCallback );
+function removeAll(combobox)
+{
+  for (let ii = combobox.options.length - 1; ii >= 0 ; ii--)
+    combobox.remove( ii );
 }
 
-function retrieveMessagesCallback( messages ) {
-  MessageTable = [];
-  removeAll( document.getElementById("MessageList") );
-
-  for (let ii = 0; ii < messages.length; ii++) {
-    MessageTable.push( messages[ii] );
-  }
-
-  for (let ii = 0; ii < messages.length; ii++) {
-    ΞaddressToName( messages[ii].hash, messages[ii].from, nameResolved )
-  }
-
-  // allow time for address lookups to complete before rendering
-  setTimeout( refreshMessageList, 1500 /* 1.5 seconds, in ms */ );
+function setSkin() {
+  let skin = document.getElementById( "SkinCB" ).value;
+  document.getElementById( "PageSkin" ).setAttribute( "href", skin );
 }
 
-function nameResolved( hash, name ) {
-  for( let ii = 0; ii < MessageTable.length; ii++ )
-    if (MessageTable[ii].hash == hash)
-      MessageTable[ii].fromname = name;
+function valToWei( val ) {
+  if (!val || val.length == 0) return '0';
 
-  ΞgetPublicKey( hash, name, pubkeyResolved );
-}
+  let parts = val.trim().split( /[\s]+/ );
+  let amtpart = parseFloat( parts[0] );
 
-function pubkeyResolved( hash, pubkeyxy ) {
-  for( let ii = 0; ii < MessageTable.length; ii++ )
-    if (MessageTable[ii].hash == hash)
-      MessageTable[ii].pubkeyxy = pubkeyxy;
-}
-
-// just render whatever is in the Header variable
-function refreshMessageList() {
-  let list = document.getElementById( "MessageList" );
-
-  // hash => { hash, block, from, to, input, fromname }
-  for (let ii = 0; ii < MessageTable.length; ii++) {
-    let msg = MessageTable[ii];
-
-    let opt = document.createElement("option");
-    opt.text =
-      padLeft( '' + msg.block, 8, ' ' ) +
-               ' ' +
-               padRight( (msg.fromname) ? msg.fromname : msg.from, 44, ' ' );
-    list.add( opt );
-  }
-}
-
-function padLeft( str, len, ch ) {
-  if (str.length >= len) return str;
-
-  let res = '';
-  for (let ix = 0; ix < len - str.length; ix++)
-    res = res.concat( ch );
-
-  res.concat( str );
-  return res;
-}
-
-function padRight( str, len, ch ) {
-  let res = str;
-  for (let ix = str.length; ix < len; ix++)
-    res = res.concat( ch );
-}
-
-function doRawHex() {
-  let firstix = document.getElementById( "MessageList" ).selectedIndex;
-  let area = document.getElementById( "MessageContentsTextArea" );
-  if (firstix < 0) return;
-  area.value = MessageTable[firstix].input;
-}
-
-function doRawUtf() {
-  console.log( 'doRawUtf()' );
-  doRawHex();
-  let area = document.getElementById( "MessageContentsTextArea" );
-  if (area.value && area.value.length > 0)
-    area.value = ΞhexToUtf( area.value );
-}
-
-function decryptHex( blackhexstr, senderpubkeyxy, acct ) {
-  let blackdata = ΞhexToBytes( blackhexstr );
-
-  let msg = "decrypt\n\n" + STRINGS[LANG].PassphrasePrompt;
-  var pphrase = prompt( msg );
-  if (pphrase == null || pphrase.length == 0) return;
-
-  let mykey = ΞloadKey( acct, acctPass );
-
-  return ecies.decrypt( mykey.privkey, blackdata ); // returns promise
-}
-
-function doRedHex() {
-  console.log( 'doRedHex()' );
-  let firstix = document.getElementById( "MessageList" ).selectedIndex;
-  let area = document.getElementById( "MessageContentsTextArea" );
-  if (firstix < 0) return;
-
-  let msg = MessageTable[firstix];
-
-  if (!msg.fromname || msg.fromname.length < 42) {
-    alert( "sender name required" );
-    return;
+  for (let ii = 1; ii < parts.length; ii++) {
+    if (parts[ii].toLowerCase() == 'wei')
+      result = amtpart;
+    else if (parts[ii].toLowerCase() == 'kwei')
+      result = amtpart * 1000;
+    else if (parts[ii].toLowerCase() == 'babbage')
+      result = amtpart * 1000;
+    else if (parts[ii].toLowerCase() == 'femtoether')
+      result = amtpart * 1000;
+    else if (parts[ii].toLowerCase() == 'mwei')
+      result = amtpart * 1000000;
+    else if (parts[ii].toLowerCase() == 'lovelace')
+      result = amtpart * 1000000;
+    else if (parts[ii].toLowerCase() == 'picoether')
+      result = amtpart * 1000000;
+    else if (parts[ii].toLowerCase() == 'gwei')
+      result = amtpart * 1000000000;
+    else if (parts[ii].toLowerCase() == 'shannon')
+      result = amtpart * 1000000000;
+    else if (parts[ii].toLowerCase() == 'nanoether')
+      result = amtpart * 1000000000;
+    else if (parts[ii].toLowerCase() == 'nano')
+      result = amtpart * 1000000000;
+    else if (parts[ii].toLowerCase() == 'szabo')
+      result = amtpart * 1000000000000;
+    else if (parts[ii].toLowerCase() == 'microether')
+      result = amtpart * 1000000000000;
+    else if (parts[ii].toLowerCase() == 'micro')
+      result = amtpart * 1000000000000;
+    else if (parts[ii].toLowerCase() == 'finney')
+      result = amtpart * 1000000000000000;
+    else if (parts[ii].toLowerCase() == 'milliether')
+      result = amtpart * 1000000000000000;
+    else if (parts[ii].toLowerCase() == 'milli')
+      result = amtpart * 1000000000000000;
+    else if (parts[ii].toLowerCase() == 'ether')
+      result = amtpart * 1000000000000000000;
+    else if (parts[ii].toLowerCase() == 'kether')
+      result = amtpart * 1000000000000000000000;
+    else if (parts[ii].toLowerCase() == 'grand')
+      result = amtpart * 1000000000000000000000;
+    else if (parts[ii].toLowerCase() == 'mether')
+      result = amtpart * 1000000000000000000000000;
+    else if (parts[ii].toLowerCase() == 'gether')
+      result = amtpart * 1000000000000000000000000000;
+    else if (parts[ii].toLowerCase() == 'tether')
+      result = amtpart * 1000000000000000000000000000;
   }
 
-  let pubkeyxy = msg.pubkeyxy;
-  if (!pubkeyxy || pubkeyxy.length == 0) {
-    alert( "sender's public key required" );
-    return;
-  }
-
-  decryptHex( msg.input, pubkeyxy, AcctCB.value ).then( (redtext) => {
-    area.value = redtext;
-  } );
+  return Math.round( result );
 }
 
-function doRedUtf() {
-  console.log( 'doRedUtf()' );
-  doRedHex();
-  let area = document.getElementById( "MessageContentsTextArea" );
-  if (area.value && area.value.length > 0)
-    area.value = ΞhexToUtf( area.value );
-}

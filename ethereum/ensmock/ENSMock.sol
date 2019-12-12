@@ -26,6 +26,14 @@ contract ENSMock {
     emit NewOwner( _node, _label, _owner );
   }
 
+  function resolver(bytes32 _node) external view returns (address) {
+    // stop compiler warnings
+    require( revreg != address(0x0) && _node != bytes32(0x0) );
+
+    // matches test setup for the registrar
+    return address(0x9E8bFcBC56a63ca595C262e1921D3B7a00BB9cF0);
+  }
+
   constructor( address _revreg ) public {
     revreg = _revreg;
   }

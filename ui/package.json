@@ -2,11 +2,8 @@
   "chromium-args": "--enable-logging=stderr",
   "name": "BLABB.ETH",
   "version": "0.1.0",
-  "description": "Messaging over Ethereum",
+  "description": "Messages over Ethereum",
   "main": "index.html",
-  "dependencies": {
-    "browserify": "^16.5.0",
-    "ecies-parity": "^0.1.1",
-    "keccak256": "^1.0.0"
-  }
+  "dependencies": "{}"
 }
+

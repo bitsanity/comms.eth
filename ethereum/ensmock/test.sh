@@ -59,6 +59,10 @@ echo who owns name $FQNAME
 node cli.js 0 $SCA owner $FQNAME
 echo ""
 
+echo resolver for $FQNAME
+node cli.js 0 $SCA resolver $FQNAME
+echo ""
+
 echo "Events"
 node cli.js 0 $SCA events
 echo ""

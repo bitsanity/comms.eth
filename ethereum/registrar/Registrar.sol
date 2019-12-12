@@ -30,9 +30,10 @@ contract Registrar {
   bytes32 public myRootNode;
   address payable public beneficiary;
 
-  uint public namefee = 50 szabo;
-  uint public namekeyfee = 100 szabo;
-  uint public topicfee = 1 finney;
+  // can be changed - default values derived at time of writing
+  uint public namefee = 100 szabo;    // ~  1 cent
+  uint public namekeyfee = 500 szabo; // ~  5 cents
+  uint public topicfee = 10 finney;   // ~ 1 dollar
 
   modifier isBeneficiary {
     require( msg.sender == beneficiary );
@@ -51,10 +52,12 @@ contract Registrar {
     _;
   }
 
-  function baseReg( string memory _label ) internal canChange(_label)
+  function baseReg( string memory _label, address _owner )
+  internal canChange(_label)
   returns (bytes32) {
     bytes32 labelhash = keccak256( abi.encodePacked(_label) );
     theENS.setSubnodeOwner( myRootNode, labelhash, address(this) );
+    defaultResolver.setAddr( toNode(_label), _owner );
     return labelhash;
   }
 
@@ -62,8 +65,7 @@ contract Registrar {
   external {
     require( msg.value >= namefee );
 
-    bytes32 labelhash = baseReg( _label );
-    defaultResolver.setAddr( toNode(_label), _owner );
+    bytes32 labelhash = baseReg( _label, _owner );
     theENS.setSubnodeOwner( myRootNode, labelhash, _owner );
     emit LabelRegistered( _label, _owner );
   }
@@ -74,7 +76,7 @@ contract Registrar {
                                 address _owner ) payable external {
     require( msg.value >= namekeyfee );
 
-    bytes32 labelhash = baseReg( _label );
+    bytes32 labelhash = baseReg( _label, _owner );
     defaultResolver.setPubkey( toNode(_label), _x, _y );
     theENS.setSubnodeOwner( myRootNode, labelhash, _owner );
     emit LabelRegistered( _label, _owner );
@@ -84,7 +86,7 @@ contract Registrar {
   payable external {
     require( msg.value >= topicfee );
 
-    bytes32 labelhash = baseReg( _topic );
+    bytes32 labelhash = baseReg( _topic, _owner );
     theENS.setSubnodeOwner( myRootNode, labelhash, _owner );
     emit TopicRegistered( _topic, _owner );
   }

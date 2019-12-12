@@ -51,6 +51,7 @@ const cmds =
    'events',
    'keccak',
    'owner',
+   'resolver',
    'setSubnodeOwner',
    'namehash'
   ];
@@ -63,6 +64,7 @@ function usage() {
      '\tevents |\n',
      '\tkeccak <label> |\n',
      '\towner <node> |\n',
+     '\tresolver <node> |\n',
      '\tsetSubnodeOwner <node> <label> <owneraddress> |\n',
      '\tnamehash <name>\n'
   );
@@ -134,6 +136,18 @@ web3.eth.getAccounts().then( (res) => {
         .call()
         .then( (res) => {
           console.log( "owner = ", res )
+        } )
+        .catch( err => { console.log } );
+      }
+
+      if (cmd == 'resolver')
+      {
+        let label = process.argv[5];
+
+        con.methods.resolver( web3.utils.hexToBytes(label) )
+        .call()
+        .then( (res) => {
+          console.log( "resolver = ", res )
         } )
         .catch( err => { console.log } );
       }

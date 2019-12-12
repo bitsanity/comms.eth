@@ -14,20 +14,22 @@ contract ReverseRegistrarMock {
 
   ReverseResolver public defaultResolver;
 
-  function claim( address _owner ) external returns (bytes32 node) {
+  function claim( address _owner ) public returns (bytes32 node) {
     emit Claimed( _owner, address(0x0) );
     return bytes32(0x0);
   }
 
-  function claimWithResolver( address _owner, address _resolver ) external
+  function claimWithResolver( address _owner, address _resolver ) public
   returns (bytes32 node) {
     emit Claimed( _owner, _resolver );
     return bytes32(0x0);
   }
 
-  function setName( bytes32 _node, string calldata _name ) external {
-    defaultResolver.setName( _node, _name );
-    emit Named( _node, _name );
+  function setName( string memory _name ) public returns (bytes32) {
+    bytes32 node = claimWithResolver( address(this), address(defaultResolver) );
+    defaultResolver.setName( node, _name );
+    emit Named( node, _name );
+    return node;
   }
 
   constructor() public {
