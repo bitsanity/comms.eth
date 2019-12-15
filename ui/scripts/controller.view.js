@@ -242,8 +242,10 @@ function doRedUtf() {
     return;
   }
 
-  let key = Buffer.from( pubkeyxy, 'hex' );
-  decryptHex( msg.input, pubkeyxy, AddrCB.value )
+  let key = Buffer.from( msg.pubkeyxy, 'hex' );
+  decryptHex( msg.input,
+              msg.pubkeyxy,
+              document.getElementById("AddressesCB").value )
   .then( (redtext) => {
     document.getElementById("MessageContentsTextArea" ).value = redtext;
   } );

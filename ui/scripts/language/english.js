@@ -72,7 +72,7 @@ STRINGS["English"] = {
   LoadGethKeyButton:"Load",
 
   // tab 4 - About
-  AboutHTML:`BLABB.ETH
+  AboutHTML:`blabb.eth
 0.1 (alpha)
 
 

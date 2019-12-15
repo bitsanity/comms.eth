@@ -45,6 +45,7 @@ function postToChanged() {
 }
 
 function postToResolved( res ) {
+  console.log( 'postToResolved: ' + res );
   postRsvToAddr = res;
   if (res && ΞisAddress(res))
     ΞgetPublicKey( '0x0', document.getElementById( "PostToInput" ).value,
@@ -52,6 +53,7 @@ function postToResolved( res ) {
 }
 
 function postToResolvedPubkey( hash, pubkeyxy ) {
+  console.log( 'postToResolvedPubkey: ' + JSON.stringify(pubkeyxy) );
   if (!pubkeyxy || pubkeyxy.length == 0)
     return;
 

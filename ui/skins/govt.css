@@ -1,0 +1,72 @@
+body {
+  background-color: #F0F0F0;
+}
+
+.tab {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+}
+
+.tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+}
+
+.tab button:hover {
+    background-color: #ddd;
+}
+
+.tab button.active {
+    background-color: #ccc;
+}
+
+.tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+
+.table {
+  border-spacing: 5px;
+}
+
+td {
+  border: 1px solid black;
+}
+
+.fieldname {
+  font-weight: bold;
+  color: darkblue;
+}
+
+.units {
+  font-style: italic;
+}
+
+.legend {
+  color: darkblue;
+  font-weight: bold;
+}
+
+.data {
+  font-family: monospace;
+  color: darkblue;
+}
+
+.hyperlink {
+  color: darkblue;
+  text-decoration: underline;
+  font-size: small;
+}
+
+.redtext {
+  color: darkred;
+}
+

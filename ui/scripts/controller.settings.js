@@ -87,7 +87,8 @@ function nameCheckCB( exists ) {
     return;
   }
 
-  let newname = document.getElementById( "LabelField" ).value;
+  let newname =
+    namehash.normalize( document.getElementById( "LabelField" ).value );
   let acct = document.getElementById( "AddressesCB" ).value;
   let val = document.getElementById( "GetHandleValueField" ).value;
   let gasprice = document.getElementById( "GasTextField" ).value;

@@ -317,10 +317,11 @@ function ΞgetPublicKey( hash, fqname, cb ) {
 }
 
 function ΞhasPubkey( acct, cb ) {
-  ΞaddressToName( '0x0', addr, function(hash,name) {
+  ΞaddressToName( '0x0', acct, function(hash,name) {
+    console.log( 'hasPubkey: ' + name );
     ΞgetPublicKey( hash, name, function(hash,pubkeyxy) {
+      console.log( 'hasPubkey' );
       if (pubkeyxy) cb( true );
-      else cb( false );
     } );
   } );
 }
