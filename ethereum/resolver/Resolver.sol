@@ -74,7 +74,7 @@ contract Resolver {
 
   function sweepToken( address _erc20 ) external {
     ERC20 token = ERC20( _erc20 );
-    token.transfer( beneficiary, token.balanceOf(beneficiary) );
+    token.transfer( beneficiary, token.balanceOf(address(this)) );
   }
 
   function changeBeneficiary( address payable _to ) external {
