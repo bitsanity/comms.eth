@@ -81,24 +81,24 @@ function doPostMessage() {
   if (    !ΞisAddress(toaddr)
        && !ΞisAddress(postRsvToAddr)
        && !ΞisAddress(postSelectedTopicAddr) ) {
-    alert( STRINGS[LANG].PostInvalidAlert );
+    userAlert( STRINGS[LANG].PostInvalidAlert );
     return;
   }
 
   if (!message || message.length == 0) {
-    alert( STRINGS[LANG].PostNoMessageAlert );
+    userAlert( STRINGS[LANG].PostNoMessageAlert );
     return;
   }
 
   if (topic && topic.length > 0 && encrypt) {
-    alert( STRINGS[LANG].PostNoEncryptForTopicAlert );
+    userAlert( STRINGS[LANG].PostNoEncryptForTopicAlert );
     document.getElementById( "RadioYes" ).checked = false;
     document.getElementById( "RadioNo" ).checked = true;
     return;
   }
 
   if (!acct || !ΞisAddress(acct)) {
-    alert( STRINGS[LANG].PostNoSenderAlert );
+    userAlert( STRINGS[LANG].PostNoSenderAlert );
     return;
   }
 
@@ -108,15 +108,15 @@ function doPostMessage() {
     toaddr = postRsvToAddr;
 
   if (!ΞisAddress(toaddr)) {
-    alert( STRINGS[LANG].PostToAddrInvalidAlert );
+    userAlert( STRINGS[LANG].PostToAddrInvalidAlert );
     return;
   }
 
   if (encrypt && postRsvToPubkey && postRsvToPubkey.length > 0) {
 
     if (!posterHasPubkey) {
-      let yn = confirm( STRINGS[LANG].PostSenderHasNoPubkeyAlert );
-      if (!yn) return;
+      if (!userConfirm( STRINGS[LANG].PostSenderHasNoPubkeyAlert ))
+        return;
     }
 
     let msgbytes = Buffer.from( message );
@@ -129,8 +129,7 @@ function doPostMessage() {
     } );
   }
   else {
-    var yn = confirm( "send unencrypted?" );
-    if (yn) {
+    if (userConfirm( STRINGS[LANG].SendUnencrypted )) {
       sendMessage( toaddr, acct, valinc, gasprice, ΞutfToHex(message) );
     }
   }
@@ -138,12 +137,8 @@ function doPostMessage() {
 
 function sendMessage( toaddr, acct, valinc, gasprice, messagehex ) {
 
-  let pphrmsg = "sendTransaction\n\n" +
-    "{from: " + acct + ", to: " + toaddr + ", value: " + valinc +
-    ", gas: 50000, gasPrice: " + gasprice + ", data: " + messagehex + "}" +
-    "\n\n" + STRINGS[LANG].PassphrasePrompt;
-
-  var pphrase = prompt( pphrmsg );
+  var pphrase =
+    userConfirmTransaction( 'send', acct, valinc, 50000, gasprice );
 
   ΞpostMessage( toaddr, acct, pphrase, valinc, messagehex, gasprice );
   document.getElementById( "MessageToPostTextArea" ).value = '';

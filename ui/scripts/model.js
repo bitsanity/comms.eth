@@ -5,8 +5,8 @@ const WS_URL = "ws://localhost:8545"; // ganache
 //const ENS="0x314159265dd8dbb310642f98f50c066173c1259b"; // .eth registrar
 //const RVR="0x9062C0A6Dbd6108336BcBe4593a3D1cE05512069"; // reverse registrar
 //const RRV='0x5fBb459C49BB06083C33109fA4f14810eC2Cf358'; // reverse resolver
-//const REG='0x3b9b02d76cc7a327adf99255fe39558089614937'; // our registrar
-//const RSV='0x9e8bfcbc56a63ca595c262e1921d3b7a00bb9cf0'; // our resolver
+//const REG=''; // blabb.eth registrar
+//const RSV=''; // blabb.eth resolver
 
 // GANACHE TEST SCA's
 const ENS='0x4ebf4321a360533ac2d48a713b8f18d341210078'; // .eth registrar

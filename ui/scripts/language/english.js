@@ -60,6 +60,7 @@ STRINGS["English"] = {
   NoLabel:"No",
   YesLabel:"Yes",
   PostButtonCommand:"Post",
+  SendUnencrypted:"Send unencrypted?",
   PostInvalidAlert:"'To' invalid address or unresolved name.",
   PostNoMessageAlert:"No message.",
   PostNoEncryptForTopicAlert:"Cannot encrypt messages sent to topic.",

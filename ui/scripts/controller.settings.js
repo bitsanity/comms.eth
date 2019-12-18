@@ -83,7 +83,7 @@ function doGetTopic() {
 
 function nameCheckCB( exists ) {
   if (exists) {
-    alert( STRINGS[LANG].NameAlreadyTaken );
+    userAlert( STRINGS[LANG].NameAlreadyTaken );
     return;
   }
 
@@ -102,7 +102,7 @@ function nameCheckCB( exists ) {
     "gas:100000,gasPrice:" + gasprice + "000000000} " +
     "\n\n" + STRINGS[LANG].PassphrasePrompt;
 
-  var pphrase = prompt( msg );
+  var pphrase = userPrompt( msg );
   if (pphrase == null || pphrase.length == 0) return;
 
   val = valToWei( val );
@@ -113,7 +113,7 @@ function nameCheckCB( exists ) {
 
 function topicCheckCB( exists ) {
   if (exists) {
-    alert( STRINGS[LANG].TopicAlreadyTaken );
+    userAlert( STRINGS[LANG].TopicAlreadyTaken );
     return;
   }
 
@@ -128,7 +128,7 @@ function topicCheckCB( exists ) {
     "gas:100000,gasPrice:" + gasprice + "000000000," +
     "value:" + val + "}\n\n" + STRINGS[LANG].PassphrasePrompt;
 
-  var pphrase = prompt( msg );
+  var pphrase = userPrompt( msg );
   if (pphrase == null || pphrase.length == 0) return;
 
   val = valToWei( val );

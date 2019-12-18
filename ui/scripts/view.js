@@ -272,3 +272,26 @@ function valToWei( val ) {
   return Math.round( result );
 }
 
+// TODO - replace javascript popups with something better
+//      - should take any js object and convert to html
+function userAlert( res ) {
+  alert( res.toString() );
+}
+
+function userConfirm( msg ) {
+  return confirm( msg.toString() );
+}
+
+function userPrompt( msg ) {
+  return prompt( msg.toString() );
+}
+
+function userConfirmTransaction( command, acct, val, gas, gasprix ) {
+
+  let pphrmsg = command + "\n" +
+    "{from:" + acct + ",value:" + val + ",gas:" + gas + ",gasPrice:" +
+    gasprix + "}" + "\n\n" + STRINGS[LANG].PassphrasePrompt;
+
+  return prompt( pphrmsg );
+}
+

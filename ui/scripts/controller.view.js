@@ -212,13 +212,13 @@ function decryptHex( blackhexstr, senderpubkeyxy, acct ) {
 
   let keyObj = getPrivateKey( acct );
   if (!keyObj) {
-    alert( STRINGS[LANG].ViewNoPrivateKeyAlert + " " + acct );
+    userAlert( STRINGS[LANG].ViewNoPrivateKeyAlert + " " + acct );
     return;
   }
 
   let msg = STRINGS[LANG].ViewPrivateKeyPassphrasePrompt + '\n\n' +
             STRINGS[LANG].PassphrasePrompt;
-  var pphrase = prompt( msg );
+  var pphrase = userPrompt( msg );
   if (pphrase == null || pphrase.length == 0) return;
 
   let myprivkey = global.keythereum.recover( pphrase, keyObj );
@@ -233,12 +233,12 @@ function doRedUtf() {
   let msg = MessageTable[firstix];
 
   if (!msg.fromname || msg.fromname.length == 0) {
-    alert( STRINGS[LANG].ViewSenderNameAlert );
+    userAlert( STRINGS[LANG].ViewSenderNameAlert );
     return;
   }
 
   if (!msg.pubkeyxy || msg.pubkeyxy.length == 0) {
-    alert( STRINGS[LANG].ViewSenderPubkeyAlert );
+    userAlert( STRINGS[LANG].ViewSenderPubkeyAlert );
     return;
   }
 
