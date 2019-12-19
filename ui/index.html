@@ -38,8 +38,10 @@
 
 <table width=100%>
   <tr>
-    <td width=50% />
-    <td width=50% align="right">
+    <td class="fieldname" align=right><div id="AddrLabel"></div></td>
+    <td><select id="AddressesCB" class="data"
+                onchange="selectedAddress()"/></td>
+    <td align="right">
       <span id="SkinLabel" class="fieldname"></span>
       <select id="SkinCB" class="data" onchange="setSkin();">
         <option value="skins/plain.css">plain</option>
@@ -70,11 +72,6 @@
 
 <div id="Settings" class="tabcontent">
 <table>
-  <tr>
-    <td class="fieldname" align=right><div id="AddrLabel"></div></td>
-    <td><select id="AddressesCB" class="data"
-                onchange="selectedAddress()"/></td>
-  </tr>
   <tr>
     <td class="fieldname"
       align=right><div id="HandleLabel" class="fieldname"></div>
