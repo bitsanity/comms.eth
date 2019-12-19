@@ -20,6 +20,7 @@ interface ERC20 {
 }
 
 // A basic first-come-first-served (FCFS) registrar.
+
 contract Registrar {
 
   event LabelRegistered( string label, address indexed owner );
@@ -30,10 +31,9 @@ contract Registrar {
   bytes32 public myRootNode;
   address payable public beneficiary;
 
-  // can be changed - default values derived at time of writing
-  uint public namefee = 100 szabo;    // ~  1 cent
-  uint public namekeyfee = 500 szabo; // ~  5 cents
-  uint public topicfee = 10 finney;   // ~ 1 dollar
+  uint public namefee = 500 szabo;
+  uint public namekeyfee = 1500 szabo;
+  uint public topicfee = 10 finney;
 
   modifier isBeneficiary {
     require( msg.sender == beneficiary );

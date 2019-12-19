@@ -7,7 +7,15 @@ and broadcast-to-topic modes.
 >
 > The ECIES implementation given here is solely based off Parity's implementation. This module offers no guarantees as to the security or validity of the implementation. Furthermore, this project is being actively developed and as such should not be used for highly sensitive information. --https://github.com/sigp/ecies-parity
 
+# Deployment
+
+The public ENS : 0x314159265dd8dbb310642f98f50c066173c1259b
+
 # Dependencies
+
+* [ENS](https://ens.domains) smart contracts including
+
+* [Ethereum](https://ethereum.org) public blockchain
 
 * developed with/for [NW](https://nwjs.io/) environment with a web3 provider
   (e.g. geth) present.

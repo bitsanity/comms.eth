@@ -1,7 +1,15 @@
 const fs = require('fs');
 const Web3 = require('web3');
-const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-const MYGASPRICE = '' + 1 * 1e9;
+const web3 =
+  new Web3(new Web3.providers.WebsocketProvider("ws://localhost:8546"));
+//new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+
+const MYGASPRICE = '2000000000';
+
+const ENS = '0x314159265dd8dbb310642f98f50c066173c1259b';
+const RSV = '0x465021F80c7cE7560D14c5BB3f96946Ec7D27870';
+const BLABBHASH =
+'0xc40578c3ef0b4a0ecb769ccacb876251a3693cc47d8def2ea5e4cd3411795e77';
 
 function getABI() {
   return JSON.parse(
@@ -62,7 +70,7 @@ function usage() {
   console.log(
     '\nUsage:\n$ node cli.js <acctindex> <SCA> <command> [arg]*\n',
      'Commands:\n',
-     '\tdeploy <ens address> <resolver address> <node> |\n',
+     '\tdeploy |\n',
      '\tevents |\n',
      '\tvariables |\n',
      '\tregisterLabel <string> <address> <value> |\n',
@@ -95,17 +103,10 @@ web3.eth.getAccounts().then( (res) => {
     if (cmd == 'deploy')
     {
       let con = new web3.eth.Contract( getABI() );
-      let ens = process.argv[5];
-      let res = process.argv[6];
-      let node = process.argv[7];
 
-      console.log( 'ens: ' + ens );
-      console.log( 'res: ' + res );
-      console.log( 'node: ' + node );
-      con
-        .deploy({data:getBinary(),
-                 arguments: [ens, res, web3.utils.hexToBytes(node)]} )
-        .send({from: eb, gas: 1452525, gasPrice: MYGASPRICE}, (err, txhash) => {
+      con.deploy({data:getBinary(),
+                 arguments: [ENS, RSV, web3.utils.hexToBytes(BLABBHASH)]} )
+        .send({from:eb, gas:1500000, gasPrice:MYGASPRICE}, (err, txhash) => {
           if (err) console.log( err );
         } )
         .on('error', (err) => { console.log("err: ", err); })

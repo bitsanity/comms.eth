@@ -1,11 +1,10 @@
 const fs = require('fs');
 const Web3 = require('web3');
 const web3 =
-  new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-//new Web3(new Web3.providers.WebsocketProvider("ws://localhost:8545"));
-//new Web3(new Web3.providers.WebsocketProvider("ws://localhost:8546"));
+  new Web3(new Web3.providers.WebsocketProvider("ws://localhost:8546"));
+//new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 
-const MYGASPRICE = '' + 1 * 1e9;
+const MYGASPRICE = '2000000000';
 
 function getABI() {
   return JSON.parse(
@@ -69,7 +68,7 @@ function usage() {
   console.log(
     '\nUsage:\n$ node cli.js <acctindex> <SCA> <command> [arg]*\n',
      'Commands:\n',
-     '\tdeploy <address> |\n',
+     '\tdeploy <ens address> |\n',
      '\tevents |\n',
      '\tvariables |\n',
      '\taddr <node> |\n',
@@ -103,18 +102,17 @@ web3.eth.getAccounts().then( (res) => {
     if (cmd == 'deploy')
     {
       let con = new web3.eth.Contract( getABI() );
-      let stubaddr = process.argv[5];
-      checkAddr( stubaddr );
+      let ensaddr = process.argv[5];
+      checkAddr( ensaddr );
 
       con
-        .deploy({data:getBinary(), arguments: [stubaddr]} )
-        .send({from: eb, gas: 1452525, gasPrice: MYGASPRICE}, (err, txhash) => {
+        .deploy({data:getBinary(), arguments: [ensaddr]} )
+        .send({from: eb, gas: 1500000, gasPrice: MYGASPRICE}, (err, txhash) => {
           if (err) console.log( err.toString() );
         } )
         .on('error', (err) => { console.log("err: ", err); })
         .on('transactionHash', (h) => { console.log( "hash: ", h ); } )
         .on('receipt', (r) => { console.log( 'rcpt: ' + r.contractAddress); } )
-        .on('confirmation', (cn, rcpt) => { console.log( 'cn: ', cn ); } )
         .then( (nin) => {
           console.log( "SCA", nin.options.address );
           process.exit(0);
