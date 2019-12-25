@@ -9,9 +9,12 @@ function doPost() {
   document.getElementById( "PostToInput" ).value = '';
   posterHasPubkey = false;
 
-  // nobody can decrypt unless poster has an ENS public key
   let acct = document.getElementById( "AddressesCB" ).value;
-  ΞhasPubkey( acct, function(res) { posterHasPubkey = res; } );
+  ΞhasPubkey( acct, (res) => {
+    posterHasPubkey = res;
+  } );
+
+  document.getElementById("PostGasEstVal").value = GASPOST;
 }
 
 function postTopicsRetrievedCallback( topics ) {
@@ -40,32 +43,48 @@ function postTopicResolved( addr ) {
 
 function postToChanged() {
   let toaddr = document.getElementById( "PostToInput" ).value;
-  if (toaddr && toaddr.toLowerCase().endsWith('.eth'))
+  if (toaddr && toaddr.toLowerCase().endsWith('.eth')) {
+    postRsvToPubkey = '';
     ΞnameToAddress( toaddr, postToResolved );
+  }
 }
 
 function postToResolved( res ) {
-  console.log( 'postToResolved: ' + res );
-  postRsvToAddr = res;
+  if (/0x0*$/.test(res)) return;
+
+  postRsvToAddr = res.toLowerCase();
+
   if (res && ΞisAddress(res))
-    ΞgetPublicKey( '0x0', document.getElementById( "PostToInput" ).value,
+    ΞgetPublicKey( '0x0', document.getElementById("PostToInput").value,
       postToResolvedPubkey );
 }
 
 function postToResolvedPubkey( hash, pubkeyxy ) {
-  console.log( 'postToResolvedPubkey: ' + JSON.stringify(pubkeyxy) );
-  if (!pubkeyxy || pubkeyxy.length == 0)
-    return;
 
   postRsvToPubkey = "04";
   if (pubkeyxy[0].startsWith("0x"))
     postRsvToPubkey += pubkeyxy[0].substring(2);
   else
     postRsvToPubkey += pubkeyxy[0];
+
   if (pubkeyxy[1].startsWith("0x"))
     postRsvToPubkey += pubkeyxy[1].substring(2);
   else
     postRsvToPubkey += pubkeyxy[1];
+
+}
+
+function postGasChanged() {
+  let gasfld = document.getElementById("PostGasEstVal");
+  try {
+    let it = parseInt( gasfld.value );
+    if (isNaN(it)) throw "bad user";
+    GASPOST = it;
+    gasfld.style.backgroundColor = 'inherit';
+  }
+  catch(err) {
+    gasfld.style.backgroundColor = 'yellow';
+  }
 }
 
 function doPostMessage() {
@@ -137,10 +156,16 @@ function doPostMessage() {
 
 function sendMessage( toaddr, acct, valinc, gasprice, messagehex ) {
 
-  var pphrase =
-    userConfirmTransaction( 'send', acct, valinc, 50000, gasprice );
+  if (!userConfirmTransaction('send', acct, valinc, GASPOST, gasprice)) return;
 
-  ΞpostMessage( toaddr, acct, pphrase, valinc, messagehex, gasprice );
+  ΞpostMessage( toaddr, acct, valinc, messagehex, gasprice,
+    err => {
+      userAlert( err );
+    },
+    res => {
+      userAlert( 'TX: ' + res );
+    } );
+
   document.getElementById( "MessageToPostTextArea" ).value = '';
 }
 

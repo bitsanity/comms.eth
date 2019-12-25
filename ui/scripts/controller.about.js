@@ -1,3 +1,4 @@
 function doAbout() {
+  // much nothing
 }
 

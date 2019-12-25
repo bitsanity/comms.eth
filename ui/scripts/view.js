@@ -1,5 +1,3 @@
-// I18N
-
 var STRINGS = {};
 var LANG = "";
 
@@ -82,6 +80,9 @@ function setLabels()
 
   // VIEW
 
+  document.getElementById( "ViewLegend" ).innerHTML =
+    STRINGS[LANG].ViewLegend;
+
   document.getElementById( "SentToLabel" ).innerHTML =
     STRINGS[LANG].SentToLabel;
 
@@ -137,6 +138,9 @@ function setLabels()
   document.getElementById( "PostValueLB" ).innerHTML =
     STRINGS[LANG].PostValueLB;
 
+  document.getElementById( "PostGasEstLB" ).innerHTML =
+    STRINGS[LANG].PostGasEstLB;
+
   document.getElementById( "MessageToPostLabel" ).innerHTML =
     STRINGS[LANG].MessageToPostLabel;
 
@@ -171,10 +175,16 @@ function setLabels()
   document.getElementById( "AboutTextArea").value = STRINGS[LANG].AboutHTML;
 
   // Load Key
-  document.getElementById( "LoadKeyLabel" ).innerHTML =
+  document.getElementById( "GethLegend" ).innerHTML =
     STRINGS[LANG].LoadKeyLabel;
 
   document.getElementById( "LoadGethKeyButton" ).innerHTML =
+    STRINGS[LANG].LoadGethKeyButton;
+
+  document.getElementById( "RawKeyLegend" ).innerHTML =
+    STRINGS[LANG].LoadRawKeyLabel;
+
+  document.getElementById( "LoadRawKeyButton" ).innerHTML =
     STRINGS[LANG].LoadGethKeyButton;
 }
 
@@ -272,8 +282,7 @@ function valToWei( val ) {
   return Math.round( result );
 }
 
-// TODO - replace javascript popups with something better
-//      - should take any js object and convert to html
+// TODO - need better popups
 function userAlert( res ) {
   alert( res.toString() );
 }
@@ -288,10 +297,10 @@ function userPrompt( msg ) {
 
 function userConfirmTransaction( command, acct, val, gas, gasprix ) {
 
-  let pphrmsg = command + "\n" +
+  let msg = command + "\n\n" +
     "{from:" + acct + ",value:" + val + ",gas:" + gas + ",gasPrice:" +
-    gasprix + "}" + "\n\n" + STRINGS[LANG].PassphrasePrompt;
+    gasprix + "}";
 
-  return prompt( pphrmsg );
+  return confirm( msg );
 }
 

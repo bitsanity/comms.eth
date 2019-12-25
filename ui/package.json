@@ -1,6 +1,6 @@
 {
   "chromium-args": "--enable-logging=stderr",
-  "name": "BLABB.ETH",
+  "name": "blabb.eth",
   "version": "0.1.0",
   "description": "Messages over Ethereum",
   "main": "index.html",

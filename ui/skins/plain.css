@@ -10,6 +10,8 @@ body {
 
 .tab button {
     background-color: inherit;
+    font-family: inherit;
+    font-weight: bold;
     float: left;
     border: none;
     outline: none;
@@ -37,6 +39,12 @@ body {
   border-spacing: 5px;
 }
 
+.opaquebackground table {
+  background: rgba(240,240,240,1.0);
+  opacity: 1.0;
+  z-index: -1;
+}
+
 td {
   padding: 5px;
 }
@@ -50,13 +58,17 @@ td {
 }
 
 .legend {
-  color: darkgreen;
   font-weight: bold;
 }
 
 .data {
   font-family: monospace;
   color: darkgreen;
+}
+
+.reddata {
+  font-family: monospace;
+  color: red;
 }
 
 .hyperlink {
@@ -67,5 +79,6 @@ td {
 
 .redtext {
   color: darkred;
+  font-weight: bold;
 }
 

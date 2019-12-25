@@ -1,9 +1,49 @@
 function doSettings() {
-  ΞlocalAccounts( localAccountsCallback );
   ΞnetworkGasPrice( networkGasPriceCallback );
+
+  ΞnamekeyFee( (nf) => {
+    document.getElementById( "GetHandleValueField" ).value =
+      ΞweiToSzabo(nf) + ' szabo';
+  } );
+
+  ΞtopicFee( (tf) => {
+    document.getElementById( "GetTopicValueField" ).value =
+      ΞweiToFinney(tf) + ' finney';
+  } );
+
+  loadLocalAccounts();
+  document.getElementById( "GasEstVal" ).value = GASREGISTER;
+  document.getElementById( "TopicGasEstVal" ).value = GASTOPIC;
 }
 
-function localAccountsCallback( eaccts ) {
+function nameGasChanged() {
+  let gasfld = document.getElementById( "GasEstVal" );
+  try {
+    let it = parseInt( gasfld.value );
+    if (isNaN(it)) throw "bad user";
+    GASREGISTER = it;
+    gasfld.style.backgroundColor = 'inherit';
+  }
+  catch(err) {
+    gasfld.style.backgroundColor = 'yellow';
+  }
+}
+
+function topicGasChanged() {
+  let gasfld = document.getElementById( "TopicGasEstVal" );
+  try {
+    let it = parseInt( gasfld.value );
+    if (isNaN(it)) throw "bad user";
+    GASTOPIC = it;
+    gasfld.style.backgroundColor = 'inherit';
+  }
+  catch(err) {
+    gasfld.style.backgroundColor = 'yellow';
+  }
+}
+
+function loadLocalAccounts() {
+  let eaccts = allLoadedAccounts(); // controller.loadkey.js
   let addrcb = document.getElementById( "AddressesCB" );
 
   let selected = addrcb.value;
@@ -53,6 +93,9 @@ function selectedAddress() {
     document.getElementById( "AddressesCB" ).value;
   document.getElementById( "GetTopicAddressValue" ).innerHTML =
     document.getElementById( "AddressesCB" ).value;
+
+  document.getElementById( "SentToInput" ).value = 
+    document.getElementById( "AddressesCB" ).value;
 }
 
 function doGetHandle() {
@@ -91,22 +134,19 @@ function nameCheckCB( exists ) {
     namehash.normalize( document.getElementById( "LabelField" ).value );
   let acct = document.getElementById( "AddressesCB" ).value;
   let val = document.getElementById( "GetHandleValueField" ).value;
-  let gasprice = document.getElementById( "GasTextField" ).value;
+  let gasprix = document.getElementById( "GasTextField" ).value + "000000000";
 
-  let msg =
-    newname + STRINGS[LANG].DAppNamespace + "\n" +
-    "{from:" + acct + ",to:ens://blabb.eth," +
-    "gas:150000,gasPrice:" + gasprice + "000000000," +
-    "value:" + val + "}\n" +
-    "{from:" + acct + ",to:ens://addr.reverse," +
-    "gas:100000,gasPrice:" + gasprice + "000000000} " +
-    "\n\n" + STRINGS[LANG].PassphrasePrompt;
-
-  var pphrase = userPrompt( msg );
-  if (pphrase == null || pphrase.length == 0) return;
+  if (! userConfirmTransaction('registerLabelAndKey( ' + newname + ' )',
+    acct, val, GASREGLAB + GASSETNAM, gasprix)) return;
 
   val = valToWei( val );
-  ΞmakeName( acct, pphrase, newname, val, gasprice * 1000000000 );
+  ΞmakeName( acct, newname, val, gasprix,
+    err => {
+      userAlert( err );
+    },
+    res => {
+      userAlert( 'TX: ' + res );
+    } );
 
   LabelField.value = "";
 }
@@ -120,19 +160,19 @@ function topicCheckCB( exists ) {
   let newtop = document.getElementById( "TopicField" ).value;
   let acct = document.getElementById( "AddressesCB" ).value;
   let val = document.getElementById( "GetTopicValueField" ).value;
-  let gasprice = document.getElementById( "GasTextField" ).value;
+  let gasprix = document.getElementById( "GasTextField" ).value + "000000000";
 
-  let msg =
-    newtop + STRINGS[LANG].DAppNamespace + "\n" +
-    "{from:" + acct + ",to:ens://blabb.eth," +
-    "gas:100000,gasPrice:" + gasprice + "000000000," +
-    "value:" + val + "}\n\n" + STRINGS[LANG].PassphrasePrompt;
-
-  var pphrase = userPrompt( msg );
-  if (pphrase == null || pphrase.length == 0) return;
+  if (! userConfirmTransaction('registerTopic( ' + newtop + ' )',
+    acct, val, GASTOPIC, gasprix)) return;
 
   val = valToWei( val );
-  ΞmakeTopic( acct, pphrase, newtop, val, gasprice * 1000000000 );
+  ΞmakeTopic( acct, newtop, val, gasprix,
+    err => {
+      userAlert( err );
+    },
+    res => {
+      userAlert( 'TX: ' + res );
+    } );
 
   TopicField.value = "";
 }

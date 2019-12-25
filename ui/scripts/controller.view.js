@@ -1,4 +1,4 @@
-// local store: [ { hash, block, from, to, input, fromname, pubkeyxy } ]
+// [ { hash, block, from, to, input, fromname, pubkeyxy } ]
 var MessageTable = [];
 
 var viewRsvToAddr = '';
@@ -133,11 +133,11 @@ function nameResolved( hash, name ) {
     if (MessageTable[ii].hash == hash) {
       MessageTable[ii].fromname = name;
     }
+
   ΞgetPublicKey( hash, name, pubkeyResolved );
 }
 
 function pubkeyResolved( hash, pubkeyxy ) {
-  if (!pubkeyxy || pubkeyxy.length == 0) return;
 
   for( let ii = 0; ii < MessageTable.length; ii++ ) {
     if (MessageTable[ii].hash == hash) {
@@ -197,6 +197,8 @@ function doRawHex() {
   if (firstix < 0) return;
   document.getElementById( "MessageContentsTextArea" ).value =
     MessageTable[firstix].input;
+
+  document.getElementById("MessageContentsTextArea" ).className = "data";
 }
 
 function doRawUtf() {
@@ -205,25 +207,21 @@ function doRawUtf() {
   let val = mcta.value;
   if (val && val.length > 0)
     mcta.value = ΞhexToUtf( val );
+
+  document.getElementById("MessageContentsTextArea" ).className = "data";
 }
 
 function decryptHex( blackhexstr, senderpubkeyxy, acct ) {
-  let blackdata = Buffer.from( ΞhexToBytes(blackhexstr) );
 
-  let keyObj = getPrivateKey( acct );
-  if (!keyObj) {
+  let blackdata = Buffer.from( ΞhexToBytes(blackhexstr) );
+  let privKey = getPrivateKeyBuff( acct );
+
+  if (!privKey) {
     userAlert( STRINGS[LANG].ViewNoPrivateKeyAlert + " " + acct );
     return;
   }
 
-  let msg = STRINGS[LANG].ViewPrivateKeyPassphrasePrompt + '\n\n' +
-            STRINGS[LANG].PassphrasePrompt;
-  var pphrase = userPrompt( msg );
-  if (pphrase == null || pphrase.length == 0) return;
-
-  let myprivkey = global.keythereum.recover( pphrase, keyObj );
-
-  return ecies.decrypt( myprivkey, blackdata ); // returns a Promise
+  return ecies.decrypt( privKey, blackdata ); // returns a Promise
 }
 
 function doRedUtf() {
@@ -247,6 +245,7 @@ function doRedUtf() {
               msg.pubkeyxy,
               document.getElementById("AddressesCB").value )
   .then( (redtext) => {
+    document.getElementById("MessageContentsTextArea" ).className = "reddata";
     document.getElementById("MessageContentsTextArea" ).value = redtext;
   } );
 }
