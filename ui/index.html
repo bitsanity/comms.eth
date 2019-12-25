@@ -7,17 +7,14 @@
   <!-- 3RD PARTY LIBS -->
   <script type="text/javascript" src="libs/web3.min.js"></script>
   <script type="text/javascript" src="libs/keythereum.min.js"></script>
-  <script type="text/javascript" src="libs/elliptic.browserify.js"></script>
-  <script type="text/javascript" src="libs/ecies-parity.browser.js"></script>
-  <script type="text/javascript"
-    src="libs/eth-ens-namehash.browserify.js"></script>
   <script>
-    var EC = require('elliptic').ec;
-    var elliptic = new EC( 'secp256k1' );
     var namehash = require('eth-ens-namehash');
     var ecies = require('ecies-parity');
     var secp256k1 = require('secp256k1');
   </script>
+
+  <!-- MODEL -->
+  <script type="text/javascript" src="scripts/model.js"></script>
 
   <!-- VIEW -->
   <script type="text/javascript" src="scripts/view.js"></script>
@@ -30,10 +27,8 @@
   <script type="text/javascript" src="scripts/controller.post.js"></script>
   <script type="text/javascript" src="scripts/controller.settings.js"></script>
   <script type="text/javascript" src="scripts/controller.view.js"></script>
-
-  <!-- MODEL -->
-  <script type="text/javascript" src="scripts/model.js"></script>
 </head>
+
 <body>
 
 <table width=100%>
@@ -87,12 +82,10 @@
       <input id="GasTextField" class="data" type=text size=5 />&nbsp;
       <span id="GasPriceUnits" class="units" />
     </td>
-  </tr>
-  <tr>
-    <td>&nbsp;</td>
     <td><div id="EthGasStationLink"
              class="hyperlink"
              onclick="window.open('https://ethgasstation.info', true)" />
+    </td>
   </tr>
   <tr>
     <td class="fieldname" align=right><div id="LastBlocksLabel"/></td>
@@ -122,17 +115,21 @@
         <tr>
           <td class="fieldname" align=right><div id="ValueLB"/></td>
           <td colspan=2>
-          <input id="GetHandleValueField" class="data"
-            type=text size=25 value="500 szabo">
+          <input id="GetHandleValueField" class="data" type=text size=25 />
           </td>
         </tr>
         <tr>
           <td class="fieldname" align=right><div id="GasEstLB"/></td>
-          <td colspan=2><div id="GasEstVal"/></td>
+          <td colspan=2>
+            <input id="GasEstVal" class=data type=text size=9 maxlength=8
+              onchange="nameGasChanged()" />
+          </td>
         </tr>
         <tr>
           <td/>
-          <td><button id="GetHandleButton" onclick="doGetHandle();"/></td>
+          <td><button id="GetHandleButton"
+                class="fieldname" onclick="doGetHandle();"/>
+          </td>
         </tr>
         </table>
 
@@ -161,17 +158,20 @@
         <tr>
           <td class="fieldname" align=right><div id="GetTopicValueLB"/></td>
           <td colspan=2>
-          <input id="GetTopicValueField" class="data"
-            type=text size=25 value="10 finney">
+          <input id="GetTopicValueField" class="data" type=text size=25 />
           </td>
         </tr>
         <tr>
           <td class="fieldname" align=right><div id="TopicGasEstLB"/></td>
-          <td colspan=2><div id="TopicGasEstVal"/></td>
+          <td colspan=2>
+          <input id="TopicGasEstVal" class=data type=text size=9 maxlength=8
+            onchange="topicGasChanged()" />
+          </td>
         </tr>
         <tr>
           <td/>
-          <td><button id="GetTopicButton" onclick="doGetTopic();"/></td>
+          <td><button id="GetTopicButton"
+              class="fieldname" onclick="doGetTopic();"/></td>
         </tr>
         </table>
       </fieldset>
@@ -180,6 +180,8 @@
 </table>
 </div>
 <div id="View" class="tabcontent">
+<fieldset>
+<legend id="ViewLegend" class="legend"></legend>
 <table>
   <tr>
     <td class="fieldname" align=right><div id="SentToLabel"></div></td>
@@ -213,14 +215,17 @@
   <tr>
     <th/>
     <td>
-      <button id="SearchButton" onclick="doSearch();" />
+      <button id="SearchButton" class="fieldname" onclick="doSearch();" />
     </td>
   </tr>
+</table>
+</fieldset>
+<table>
   <tr>
     <td class="fieldname" align=right
         valign=top><div id="MessagesLabel"></div></td>
     <td>
-      <select id="MessageList" multiple size=8 class="data"
+      <select id="MessageList" multiple size=10 class="data"
          onchange="messageSelected()"></select>
     </td>
   </tr>
@@ -229,17 +234,25 @@
        align=right valign=top><div id="ContentsLabel"></div></td>
     <td>
       <textarea id="MessageContentsTextArea" class="data"
-        rows=12 cols=76>&nbsp;</textarea>
+        rows=10 cols=85>&nbsp;</textarea>
     </td>
   </tr>
   <tr>
     <td/>
     <td>
-      <input type="radio" id="RawHexRB" name="ContentView" onclick="doRawHex()"
-        checked/><span id="BlackHexButton"></span>&nbsp;&nbsp;
-      <input type="radio" onclick="doRawUtf()"
-        name="ContentView"/><span id="BlackUtfButton"></span>&nbsp;&nbsp;
-      <input type="radio" onclick="doRedUtf()" name="ContentView"/>
+      <input type="radio"
+             id="RawHexRB"
+             name="ContentView"
+             onclick="doRawHex()"
+             checked/><span id="BlackHexButton"
+                            class="fieldname"></span>&nbsp;&nbsp;
+      <input type="radio"
+             onclick="doRawUtf()"
+             name="ContentView"/><span id="BlackUtfButton"
+                                       class="fieldname"></span>&nbsp;&nbsp;
+      <input type="radio"
+             onclick="doRedUtf()"
+             name="ContentView"/>
       <span id="RedUtfButton" class="redtext"></span>
     </td>
   </tr>
@@ -268,6 +281,14 @@
     <td><input id="PostValueField" class="data"
       type=text size=25 value="0 wei"/></td>
   </tr>
+
+  <tr>
+    <td class="fieldname" align=right><div id="PostGasEstLB"/></td>
+    <td colspan=2><input id="PostGasEstVal" class=data type=text size=9
+                         maxlength=8 onchange="postGasChanged()" />
+    </td>
+  </tr>
+
   <tr>
     <td class="fieldname" align=right
       valign=top><div id="MessageToPostLabel"></div></td>
@@ -279,33 +300,58 @@
   <tr>
     <td class="fieldname" align=right><div id="EncryptedLabel"></div></td>
     <td>
-      <input id="RadioNo" name="radio1" type=radio checked />&nbsp;<span id="NoLabel"></span>&nbsp;<input id="RadioYes" name="radio1" type=radio />&nbsp;<span id="YesLabel"></span>
+      <input id="RadioNo"
+             name="radio1"
+             type=radio
+             checked />&nbsp;
+      <span id="NoLabel" class="fieldname"></span>&nbsp;
+      <input id="RadioYes"
+             name="radio1"
+             type=radio />&nbsp;
+      <span id="YesLabel" class="fieldname"></span>
     </td>
   </tr>
   <tr>
     <td/>
-    <td><button id="PostButton" onclick="doPostMessage();"/></td>
+    <td>
+      <button id="PostButton" class="fieldname" onclick="doPostMessage();"/>
+    </td>
   </tr>
 </table>
 </div>
 <div id="About" class="tabcontent">
-<textarea id="AboutTextArea" rows=30 cols=80 readonly></textarea>
+<textarea id="AboutTextArea" rows=35 cols=98 readonly></textarea>
 </div>
 <div id="LoadKey" class="tabcontent">
+<fieldset>
+<legend id="GethLegend" class="legend"></legend>
 <table>
 <tr>
-  <td><div id="LoadKeyLabel"></div></td>
-</tr>
-<tr>
   <td>
-    <textarea id="LoadKeyTextArea" class="data"
-      rows=8 cols=85 wrap="hard"></textarea>
+    <textarea id="LoadKeyTextArea" class="data" rows=7 cols=90 wrap="hard">
+    </textarea>
   </td>
 </tr>
 <tr>
-  <td><button id="LoadGethKeyButton" onclick="doLoadGethKey();"/></td>
+  <td><button id="LoadGethKeyButton"
+              class="fieldname" onclick="doLoadGethKey();"/>
+  </td>
 </tr>
 </table>
+</fieldset>
+<p/>
+<fieldset>
+<legend id="RawKeyLegend" class="legend"></legend>
+<table>
+<tr>
+  <td><input id="LoadRawKeyField" type=text class="reddata" size=66 /></td>
+</tr>
+<tr>
+  <td><button id="LoadRawKeyButton"
+         class="fieldname" onclick="doLoadRawKey();"/></td>
+</tr>
+</table>
+</fieldset>
 </div>
 
 <script type="text/javascript">
