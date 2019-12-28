@@ -163,8 +163,10 @@ function ΞnameExists( nametocheck, cb ) {
 
     for (let ii = 0; ii < evts.length; ii++) {
       if ( nametocheck.toLowerCase()
-           == evts[ii].returnValues.label.toLowerCase() )
+           == evts[ii].returnValues.label.toLowerCase() ) {
         cb( true );
+        return;
+      }
     }
 
     RegistarCon.getPastEvents( 'TopicRegistered',
@@ -173,8 +175,10 @@ function ΞnameExists( nametocheck, cb ) {
 
       for (ii = 0; ii < evts.length; ii++) {
         if ( nametocheck.toLowerCase()
-             == evts[ii].returnValues.topic.toLowerCase() )
+             == evts[ii].returnValues.topic.toLowerCase() ) {
           cb( true );
+          return;
+        }
       }
     } )
     .catch( (err) => { console.log( err.toString() ); } );

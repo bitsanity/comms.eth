@@ -53,7 +53,7 @@ function topicGasChanged() {
 }
 
 function loadLocalAccounts() {
-  let eaccts = allLoadedAccounts(); // controller.loadkey.js
+  let eaccts = allLoadedAccounts();
   let addrcb = document.getElementById( "AddressesCB" );
 
   let selected = addrcb.value;
