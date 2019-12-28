@@ -305,7 +305,7 @@
       valign=top><div id="MessageToPostLabel"></div></td>
     <td colspan=2>
       <textarea id="MessageToPostTextArea" class="data"
-        rows=8 cols=76>&nbsp;</textarea>
+        rows=8 cols=76></textarea>
     </td>
   </tr>
   <tr>
@@ -314,11 +314,13 @@
       <input id="RadioNo"
              name="radio1"
              type=radio
-             checked />&nbsp;
+             checked
+             onchange="encryptOptionSelected(false)"/>&nbsp;
       <span id="NoLabel" class="fieldname"></span>&nbsp;
       <input id="RadioYes"
              name="radio1"
-             type=radio />&nbsp;
+             type=radio
+             onchange="encryptOptionSelected(true)"/>&nbsp;
       <span id="YesLabel" class="fieldname"></span>
     </td>
   </tr>

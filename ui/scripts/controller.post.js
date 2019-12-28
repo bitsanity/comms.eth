@@ -87,6 +87,14 @@ function postGasChanged() {
   }
 }
 
+function encryptOptionSelected( yn ) {
+  let mtpta = document.getElementById( "MessageToPostTextArea" );
+  if (yn)
+    mtpta.className = "reddata";
+  else
+    mtpta.className = "data";
+}
+
 function doPostMessage() {
 
   let acct = document.getElementById( "AddressesCB" ).value;
