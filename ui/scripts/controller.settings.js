@@ -16,6 +16,16 @@ function doSettings() {
   document.getElementById( "TopicGasEstVal" ).value = GASTOPIC;
 }
 
+function setWeb3StatusIndicator( yn ) {
+  let fld = document.getElementById( "WSURLValue" );
+
+  if (yn) {
+    fld.style.color = 'green';
+    setTimeout( doSettings, 100 );
+  }
+  else fld.style.color = 'red';
+}
+
 function nameGasChanged() {
   let gasfld = document.getElementById( "GasEstVal" );
   try {

@@ -13,7 +13,7 @@ function getPrivateKeyBuff( acct ) {
 
   for( let ii = 0; ii < KeyObjs.length; ii++ ) {
     let obj = KeyObjs[ii];
-    if (act == obj.addr.toLowerCase())
+    if (act === obj.addr.toLowerCase())
       return obj.privkey;
   }
   return null;
@@ -24,7 +24,7 @@ function getPublicKeyBuff( acct ) {
 
   for( let ii = 0; ii < KeyObjs.length; ii++ ) {
     let obj = KeyObjs[ii];
-    if (act == obj.addr.toLowerCase())
+    if (act === obj.addr.toLowerCase())
       return obj.pubkey;
   }
   return null;

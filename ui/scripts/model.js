@@ -7,18 +7,15 @@ var GASREGISTER = GASREGLAB + GASSETNAM;
 var GASTOPIC = 100000;
 var GASPOST = 250000; // 21000 for a simple send, plus generous slack for data
 
-var TESTMODE = true;
-var WS_URL, ENS, RVR, REG, RSV;
+var TESTMODE = true, ENS, RVR, REG, RSV;
 
 if (TESTMODE) {
-  WS_URL = "ws://localhost:8545"; // ganache
   ENS='0x4ebf4321a360533ac2d48a713b8f18d341210078'; // .eth registrar
   RVR='0xf68580c3263fb98c6eaee7164afd45ecf6189ebb'; // reverse registrar
   REG='0x3b9b02d76cc7a327adf99255fe39558089614937'; // our registrar
   RSV='0x9e8bfcbc56a63ca595c262e1921d3b7a00bb9cf0'; // our resolver
 }
 else { // PROD
-  WS_URL = "ws://localhost:8546"; // geth
   ENS="0x314159265dd8dbb310642f98f50c066173c1259b"; // .eth registrar
   RVR="0x9062C0A6Dbd6108336BcBe4593a3D1cE05512069"; // reverse registrar
   RRV='0x5fBb459C49BB06083C33109fA4f14810eC2Cf358'; // reverse resolver
@@ -36,21 +33,44 @@ var RegistarCon;
 var ResolverCon;
 
 function Ξconnect() {
-  if (typeof web3 !== 'undefined')
-    web3 = new Web3( web3.currentProvider );
-  else
-    web3 = new Web3( new Web3.providers.WebsocketProvider(WS_URL) );
+  let wsurl = document.getElementById( "WSURLValue" );
+  let val = wsurl.value;
 
-  ENSCon = new web3.eth.Contract( JSON.parse(ENSABI), ENS );
-  RevRegCon = new web3.eth.Contract( JSON.parse(RVRABI), RVR );
-  RevRegCon.methods.defaultResolver().call()
-  .then( (rsv) => {
-    RevResolverCon = new web3.eth.Contract( JSON.parse(RRVABI), rsv );
+  if ( !val || val.length == 0 )
+    wsurl.value = "ws://localhost:8546";
+
+  if (    ! /ws:\/\/localhost:\d+$/.test(val)
+       && ! /ws:\/\/[\.\d]+:\d+$/.test(val) ) {
+     wsurl.value = '';
+     return;
+  }
+
+  setTimeout( testWeb3Connection, 250 );
+}
+
+function testWeb3Connection() {
+  let url = document.getElementById( "WSURLValue" ).value;
+  web3 = new Web3( new Web3.providers.WebsocketProvider(url) );
+
+  web3.eth.getGasPrice()
+  .then( res => {
+    setWeb3StatusIndicator( true );
+
+    ENSCon = new web3.eth.Contract( JSON.parse(ENSABI), ENS );
+    RevRegCon = new web3.eth.Contract( JSON.parse(RVRABI), RVR );
+    RevRegCon.methods.defaultResolver().call()
+    .then( (rsv) => {
+      RevResolverCon = new web3.eth.Contract( JSON.parse(RRVABI), rsv );
+    } )
+    .catch( (err) => { console.log(err.toString()) } );
+
+    RegistarCon = new web3.eth.Contract( JSON.parse(REGABI), REG );
+    ResolverCon = new web3.eth.Contract( JSON.parse(RSVABI), RSV );
   } )
-  .catch( (err) => { console.log(err.toString()) } );
-
-  RegistarCon = new web3.eth.Contract( JSON.parse(REGABI), REG );
-  ResolverCon = new web3.eth.Contract( JSON.parse(RSVABI), RSV );
+  .catch( (err) => {
+    setWeb3StatusIndicator( false );
+    console.log( err.toString() );
+  } );
 }
 
 function ΞweiToSzabo( wei ) {
@@ -82,7 +102,6 @@ function ΞisAddress( sca )
   try { sca.startsWith("0x"); }
   catch(err) {
     console.log( 'bad sca: ' + sca );
-    new Error().stack;
   }
 
   return    null != sca
@@ -309,7 +328,9 @@ async function
 ΞretrieveMessages( blockstogoback, toaddr, fromaddr, keywords, cb ) {
   let result = [];
 
+  let useto = ΞisAddress( toaddr );
   let usefrom = ΞisAddress( fromaddr );
+
   let blocknum = await web3.eth.getBlockNumber();
   let fromblock = (blocknum > blockstogoback) ? (blocknum - blockstogoback) : 0;
 
@@ -320,20 +341,28 @@ async function
 
       // ignore simple transfers - no data
       if (    !blk.transactions[jj].input
-           || blk.transactions[jj].input.length == 0 )
+           || blk.transactions[jj].input.length == 0 ) {
         continue;
+      }
 
-      // ignore contract creates
-      if (!blk.transactions[jj].to)
+      // ignore blank 'to' fields (contract creates)
+      if (    !blk.transactions[jj].to
+           || blk.transactions[jj].to.length == 0
+           || /0x0+$/.test(blk.transactions[jj].to)
+           || blk.transactions[jj].to.toLowerCase() === "null" ) {
         continue;
+      }
 
-      if (   usefrom
-          && fromaddr.toLowerCase() != blk.transactions[jj].from.toLowerCase())
+      if ( usefrom && fromaddr.toLowerCase() !==
+           blk.transactions[jj].from.toLowerCase() )
+      {
         continue;
+      }
 
-      if (   toaddr
-          && toaddr.toLowerCase() != blk.transactions[jj].to.toLowerCase() )
+      if (   useto
+          && toaddr.toLowerCase() !== blk.transactions[jj].to.toLowerCase() ) {
         continue;
+      }
 
       // this will only work on unencrypted messages
       if (keywords && keywords.length > 0) {
@@ -380,6 +409,7 @@ function ΞnameToAddress( name, cb ) {
 
     let resvcon = new web3.eth.Contract( JSON.parse(RSVABI), resvaddr );
     resvcon.methods.addr( node ).call().then( (result) => {
+      console.log( 'resolved ' + name + ' as ' + result );
       if ( cb && ΞisAddress(result))
         cb( result );
     } )

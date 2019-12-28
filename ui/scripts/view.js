@@ -30,6 +30,9 @@ function setLabels()
 
   // SETTINGS
 
+  document.getElementById( "WSURLLabel" ).innerHTML =
+    STRINGS[LANG].WSURLLabel;
+
   document.getElementById( "AddrLabel" ).innerHTML =
     STRINGS[LANG].UseAddressLabel;
 

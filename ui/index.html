@@ -23,10 +23,10 @@
 
   <!-- CONTROLLERS -->
   <script type="text/javascript" src="scripts/controller.about.js"></script>
-  <script type="text/javascript" src="scripts/controller.loadkey.js"></script>
+  <script type="text/javascript" src="scripts/controller.login.js"></script>
   <script type="text/javascript" src="scripts/controller.post.js"></script>
   <script type="text/javascript" src="scripts/controller.settings.js"></script>
-  <script type="text/javascript" src="scripts/controller.view.js"></script>
+  <script type="text/javascript" src="scripts/controller.read.js"></script>
 </head>
 
 <body>
@@ -40,7 +40,7 @@
       <span id="SkinLabel" class="fieldname"></span>
       <select id="SkinCB" class="data" onchange="setSkin();">
         <option value="skins/plain.css">plain</option>
-        <option value="skins/govt.css">govtagent</option>
+        <option value="skins/govt.css">govt</option>
       </select>
       &nbsp;&nbsp;
       <span id="LanguageLabel" class="fieldname">&nbsp;</span>
@@ -53,20 +53,29 @@
 </table>
 
 <div class="tab">
+<button class="tablinks redtext" id="LoadKeyTabButton"
+  onclick="openTab(event, 'LoadKey');doLoadKey();" />
+<button class="tablinks" id="SettingsTabButton"
+  onclick="openTab(event, 'Settings');doSettings();" />
 <button class="tablinks" id="ViewTabButton"
   onclick="openTab(event, 'View');doView();" />
 <button class="tablinks" id="PostTabButton"
   onclick="openTab(event, 'Post');doPost();" />
-<button class="tablinks" id="SettingsTabButton"
-  onclick="openTab(event, 'Settings');doSettings();" />
-<button class="tablinks redtext" id="LoadKeyTabButton"
-  onclick="openTab(event, 'LoadKey');doLoadKey();" />
 <button class="tablinks" id="AboutTabButton"
   onclick="openTab(event, 'About');doAbout();" />
 </div>
 
 <div id="Settings" class="tabcontent">
 <table>
+  <tr>
+    <td align=right><div id="WSURLLabel" class=fieldname /></td>
+    <td>
+      <!-- enough to hold IPv6 "ws://255.255.255.255.255.255:8546" -->
+      <input id="WSURLValue"
+        type=text class=data size=34 maxlength=33
+          value="ws://localhost:8546" onchange="Ξconnect()" />
+    </td>
+  </tr>
   <tr>
     <td class="fieldname"
       align=right><div id="HandleLabel" class="fieldname"></div>
@@ -80,11 +89,11 @@
     <td class="fieldname" align=right><div id="GasPriceLabel"/></td>
     <td>
       <input id="GasTextField" class="data" type=text size=5 />&nbsp;
-      <span id="GasPriceUnits" class="units" />
+      <span id="GasPriceUnits" class="units"></span>
     </td>
-    <td><div id="EthGasStationLink"
-             class="hyperlink"
-             onclick="window.open('https://ethgasstation.info', true)" />
+    <td align=left>
+      <div id="EthGasStationLink" class="hyperlink"
+         onclick="window.open('https://ethgasstation.info', true)" />
     </td>
   </tr>
   <tr>
@@ -186,8 +195,9 @@
   <tr>
     <td class="fieldname" align=right><div id="SentToLabel"></div></td>
     <td>
-      <input id="SentToInput" class="data" type=text size="42" />&nbsp;<span
-          id="NameAddressLabel" class="units"></span>
+      <input id="SentToInput" class="data" type=text size="42"
+        onchange="viewToChanged()" />&nbsp;<span id="NameAddressLabel"
+          class="units"></span>
     </td>
   </tr>
   <tr>
@@ -203,7 +213,8 @@
     <td class="fieldname" align=right><div id="FromLabel"></div></td>
     <td>
       <input id="FromAddressField" type=text class="data"
-        size="42"/>&nbsp;<span id="NameAddressLabel2" class="units"></span>
+        onchange="viewFromChanged()" size="42"/>&nbsp;<span
+          id="NameAddressLabel2" class="units"></span>
     </td>
   </tr>
   <tr>

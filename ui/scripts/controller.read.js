@@ -18,26 +18,26 @@ function doView() {
 
 function viewFromChanged() {
   let fromaddr = document.getElementById( "FromAddressField" ).value;
-  if (fromaddr && fromaddr.toLowerCase().endsWith('.eth'))
+  if (fromaddr.toLowerCase().endsWith('.eth')) {
     ΞnameToAddress( fromaddr, viewFromResolved );
+  }
   else
     viewRsvFromAddr = '';
 }
 
 function viewFromResolved( val ) {
-  viewRsvFromAddr = '';
+  viewRsvFromAddr = val;
 }
 
 function viewToChanged() {
   let toaddr = document.getElementById( "SentToInput" ).value;
-  if (toaddr && toaddr.toLowerCase().endsWith('.eth'))
+  if (toaddr.toLowerCase().endsWith('.eth'))
     ΞnameToAddress( toaddr, viewToResolved );
   else
     viewRsvToAddr = '';
 }
 
 function viewToResolved( res ) {
-  console.log( 'view Sent To: is ' + res );
   viewRsvToAddr = res;
 }
 

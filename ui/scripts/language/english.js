@@ -7,9 +7,10 @@ STRINGS["English"] = {
   ViewTabLabel:"Read",
   PostTabLabel:"Post",
   AboutTabLabel:"About",
-  LoadKeyTabLabel:"Load Key",
+  LoadKeyTabLabel:"Login",
 
   // tab 1 - settings
+  WSURLLabel:"web3 Gateway:",
   UseAddressLabel:"Address:",
   UnlockButtonCommand:"Unlock ...",
   PassphrasePrompt:"Passphrase to unlock:",
@@ -71,8 +72,8 @@ STRINGS["English"] = {
   PostSenderHasNoPubkeyAlert:"WARN: Sending without a registered pubkey.",
 
   // Load Key
-  LoadKeyLabel:"Paste geth account file contents:",
-  LoadRawKeyLabel:"Paste hex privkey (format 0x...):",
+  LoadKeyLabel:"Paste geth Account File Contents (JSON):",
+  LoadRawKeyLabel:"Paste Raw Private Key (hex)",
   LoadGethKeyButton:"Load",
 
   // tab 4 - About
@@ -87,49 +88,68 @@ blabb.eth transmits plaintext or encrypted messaging in Ethereum transactions. P
 broadcast (to topic) features are supported.
 
 
-*** Security Warning ***
+*** Security Warnings ***
 
-This sofware includes the source code and is written as simply as possible for inspection. This
-also makes it possible for a miscreant to modify the software and trick someone to run it and
-reveal private information.
+1. This sofware includes the source code and is written as simply as possible for inspection.
+   Anyone who can modify the code can also introduce security faults. Each user is responsible
+   to inspect and control access to his/her copy of the software.
 
-The user is responsible to inspect the downloaded software and confirm the absence of disk writes
-and internet message exchanges other than with Ethereum.
+2. All software, including this software, has the potential to include defects (bugs).
 
-Also remember that all software has the potential to include defects (bugs).
+3. Quote: The ECIES implementation given here is solely based off Parity's implementation. This
+   module offers no guarantees as to the security or validity of the implementation. Furthermore,
+   this project is being actively developed and as such should not be used for highly sensitive
+   information. Endquote --https://github.com/sigp/ecies-parity
 
-*** Dependency Warning ***
+4. Encrypted messages require the receiver's private key in order to decrypt them.  Loss of one's
+   private key means loss of one's ability to read one's inbound encrypted messages.
 
-blabb.eth is dependent on the availability of the Ethereum public blockchain.
 
-blabb.eth and all .eth names depend on a set of smart contracts that together implement a service
-known as the Ethereum Name Service (ENS).
+*** Privacy Warnings ***
 
-This software was developed to run in a browser environment - specifically the nw.js platform.
-Other platforms may or may not work correctly.
+1. Anyone can use blabb.eth to post public, plain text messages on the blockchain. These messages
+   will be readable forever by anyone.
 
-*** Privacy Warning ***
+2. Information about what addresses have exchanged messages and the timing of them can provide
+   valuable information to observers.
 
-Anyone can use blabb.eth to post public, plain text messages on the blockchain. These messages
-will be readable by anyone in the world, forever.
+3. Sending an ECIES encrypted message requires the receiver's public key be already published in
+   the Ethereum Name Service (ENS).
 
-Information about what addresses have exchanged messages and the timing of them can provide
-valuable information to observers.
 
-*** Encryption Warning ***
+*** Dependency Warnings ***
 
-Encrypted messages require the receiver's private key in order to decrypt them.  Loss of one's
-private key means loss of one's ability to read messages, forever.
+1. blabb.eth is dependent on the availability of and access to the Ethereum public blockchain.
 
-*** Cryptography Warning ***
+2. blabb.eth and all .eth names depend on a set of smart contracts together implementing a service
+   known as Ethereum Name Service (ENS).
 
-The ECIES implementation given here is solely based off Parity's implementation. This module
-offers no guarantees as to the security or validity of the implementation. Furthermore,
-this project is being actively developed and as such should not be used for highly sensitive
-information.
---https://github.com/sigp/ecies-parity
+3. This software was developed to run in a browser environment - specifically the nw.js platform.
+   Other platforms (e.g. Google Chrome with MetaMask plugin)  may or may not work correctly.
 
-*** Fee Disclosure ***
+
+--- Notes ---
+
+1. Developed in/for https://nwjs.io/ environment. Assumes a web3 websocket provider is accessible
+   on port 8546. The URL is a setting.
+
+2. The software is constructed to use only the read-only services of a web3 gateway plus
+   forwarding raw already-signed transactions. The software does not use unsafe unlock. The
+   software does not read local accounts nor does it depend on geth to sign transactions.
+
+3. The message search capability will be more responsive if the web3 gateway is also a full node.
+
+4. The blabb.eth client performs ECIES encryption and requires the user's private key to decrypt
+   inbound messages.
+
+5. The blabb.eth client will prompt the user for the passphrase to an Ethereum address if
+   required to retrieve the key from an encrypted keyfile object.
+
+6. Private keys and passphrases are held only in memory only. The software will not and should
+   never write this information to disk nor transmit it outside of the process.
+
+
+--- Fee Disclosure ---
 
 1. The Ethereum blockchain requires "gas" whenever a transaction changes the blockchain state.
    Reading the blockchain is free of charge, provided one has web3 access. This gas is not paid
@@ -144,28 +164,31 @@ information.
    by the admin and is always readable from the Registrar smart contract.
 
 
------ Notes -----
+--- Licenses ---
 
-Developed in/for https://nwjs.io/ environment. Assumes a web3 provider such as geth or parity
-is available.
+blabb.eth
 
-The software is constructed such that the personal module is not required. The software does not
-read local accounts nor does it depend on geth to sign transactions.
+MIT License
 
-The blabb.eth client may prompt the user for the passphrase to an Ethereum address if
-required to unlock the account and post transactions.
+Copyright (c) 2019 blabb.eth original author, community and contributors
 
-The blabb.eth client performs ECIES encryption and requires the user's private key. An import from
-outside format may require a passphrase to decrypt a given key object.
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+associated documentation files (the "Software"), to deal in the Software without restriction,
+including without limitation the rights to use, copy, modify, merge, publish, distribute,
+sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+is furnished to do so, subject to the following conditions:
 
-Private keys and passphrases are held only in memory only, always. The software will not and
-should never write this information to disk nor transmit it outside of the process.
+The above copyright notice and this permission notice shall be included in all copies or
+substantial portions of the Software.
 
------ Licenses -----
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 
 web3.min.js
-
-This file is part of web3.js.
 
 web3.js is free software: you can redistribute it and/or modify it under the terms of the GNU
 Lesser General Public License as published by the Free Software Foundation, either version
@@ -233,7 +256,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 
------------ ecies-party -----------
+ecies-parity
 
 MIT License
 
@@ -253,26 +276,4 @@ BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR P
 NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
 DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
---------- blabb.eth ---------
-
-MIT License
-
-Copyright (c) 2019 blabb.eth community and contributors
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
-associated documentation files (the "Software"), to deal in the Software without restriction,
-including without limitation the rights to use, copy, modify, merge, publish, distribute,
-sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
-is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or
-substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
-BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  ` };
-
+` };
