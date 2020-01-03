@@ -16,14 +16,30 @@ function doSettings() {
   document.getElementById( "TopicGasEstVal" ).value = GASTOPIC;
 }
 
+function wsUrlChanged() {
+  let wsurl = document.getElementById( "WSURLValue" );
+  let val = wsurl.value;
+
+  Ξconnect( val,
+    err => {
+      setTimeout( setWeb3StatusIndicator(false), 200 );
+    },
+    () => {
+      setTimeout( setWeb3StatusIndicator(true), 200 );
+      setTimeout( doSettings, 200 );
+    } );
+}
+
 function setWeb3StatusIndicator( yn ) {
   let fld = document.getElementById( "WSURLValue" );
-
   if (yn) {
     fld.style.color = 'green';
-    setTimeout( doSettings, 100 );
   }
   else fld.style.color = 'red';
+}
+
+function myGasPriceSetting() {
+  return document.getElementById( "GasTextField" ).value * 1000000000;
 }
 
 function nameGasChanged() {
@@ -144,10 +160,10 @@ function nameCheckCB( exists ) {
     namehash.normalize( document.getElementById( "LabelField" ).value );
   let acct = document.getElementById( "AddressesCB" ).value;
   let val = document.getElementById( "GetHandleValueField" ).value;
-  let gasprix = document.getElementById( "GasTextField" ).value + "000000000";
+  let gasprix = myGasPriceSetting();
 
   if (! userConfirmTransaction('registerLabelAndKey( ' + newname + ' )',
-    acct, val, GASREGLAB + GASSETNAM, gasprix)) return;
+    acct, val, GASREGISTER, gasprix)) return;
 
   val = valToWei( val );
   ΞmakeName( acct, newname, val, gasprix,
@@ -155,7 +171,14 @@ function nameCheckCB( exists ) {
       userAlert( err );
     },
     res => {
-      userAlert( 'TX: ' + res );
+      let fqname = newname + STRINGS[LANG].DAppNamespace;
+      ΞsetResolver( acct, fqname, gasprix,
+        err => {
+          userAlert( err );
+        },
+        res2 => {
+          userAlert( 'TX: ' + res2 );
+        } );
     } );
 
   LabelField.value = "";
@@ -170,7 +193,7 @@ function topicCheckCB( exists ) {
   let newtop = document.getElementById( "TopicField" ).value;
   let acct = document.getElementById( "AddressesCB" ).value;
   let val = document.getElementById( "GetTopicValueField" ).value;
-  let gasprix = document.getElementById( "GasTextField" ).value + "000000000";
+  let gasprix = myGasPriceSetting();
 
   if (! userConfirmTransaction('registerTopic( ' + newtop + ' )',
     acct, val, GASTOPIC, gasprix)) return;
@@ -181,8 +204,15 @@ function topicCheckCB( exists ) {
       userAlert( err );
     },
     res => {
-      userAlert( 'TX: ' + res );
-    } );
+      let fqname = newtop + STRINGS[LANG].DAppNamespace;
+      ΞsetResolver( acct, fqname, gasprix,
+        err => {
+          userAlert( err );
+        },
+        res2 => {
+          userAlert( 'TX: ' + res2 );
+        } );
+     } );
 
   TopicField.value = "";
 }

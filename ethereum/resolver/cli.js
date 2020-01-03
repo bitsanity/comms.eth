@@ -1,10 +1,10 @@
 const fs = require('fs');
 const Web3 = require('web3');
 const web3 =
-  new Web3(new Web3.providers.WebsocketProvider("ws://localhost:8546"));
-//new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+  new Web3(new Web3.providers.WebsocketProvider("ws://localhost:8545"));
+//new Web3(new Web3.providers.WebsocketProvider("ws://localhost:8546"));
 
-const MYGASPRICE = '2000000000';
+const MYGASPRICE = '1000000000';
 
 function getABI() {
   return JSON.parse(

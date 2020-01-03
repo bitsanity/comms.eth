@@ -1,76 +1,82 @@
-//
-// REMEMBER: change is returned as long as the transaction does not revert
-//
-var GASREGLAB = 100000;
-var GASSETNAM = 150000;
-var GASREGISTER = GASREGLAB + GASSETNAM;
-var GASTOPIC = 100000;
-var GASPOST = 250000; // 21000 for a simple send, plus generous slack for data
+//var FROMBLOCK = 0; // TEST
+var FROMBLOCK = 9000000; // PROD
 
-var TESTMODE = true, ENS, RVR, REG, RSV;
+var GASREGLAB = 100000; // gas to register a label
+var GASSETKEY = 150000; // gas to setPubkey
+var GASSETRSV = 100000; // gas to setResolver in ENS
+var GASSETRVN = 150000; // gas to setName in ReverseRegistrar
+var GASREGISTER = GASREGLAB + GASSETKEY;
+var GASTOPIC = GASREGLAB;
+var GASPOST = 250000;
 
-if (TESTMODE) {
-  ENS='0x4ebf4321a360533ac2d48a713b8f18d341210078'; // .eth registrar
-  RVR='0xf68580c3263fb98c6eaee7164afd45ecf6189ebb'; // reverse registrar
-  REG='0x3b9b02d76cc7a327adf99255fe39558089614937'; // our registrar
-  RSV='0x9e8bfcbc56a63ca595c262e1921d3b7a00bb9cf0'; // our resolver
-}
-else { // PROD
-  ENS="0x314159265dd8dbb310642f98f50c066173c1259b"; // .eth registrar
-  RVR="0x9062C0A6Dbd6108336BcBe4593a3D1cE05512069"; // reverse registrar
-  RRV='0x5fBb459C49BB06083C33109fA4f14810eC2Cf358'; // reverse resolver
-  REG='0xbC8a649C8B3b739b6ea22bb48E1B051b63157eda'; // blabb.eth registrar
-  RSV='0x465021F80c7cE7560D14c5BB3f96946Ec7D27870'; // blabb.eth resolver
-}
+var ENS, RVR, REG, RSV;
+
+// TEST
+//ENS='0x4ebf4321a360533ac2d48a713b8f18d341210078';
+//RVR='0xf68580c3263fb98c6eaee7164afd45ecf6189ebb';
+//REG='0x3b9b02d76cc7a327adf99255fe39558089614937';
+//RSV='0x9e8bfcbc56a63ca595c262e1921d3b7a00bb9cf0';
+
+// PROD
+ENS="0x314159265dd8dbb310642f98f50c066173c1259b"; // .eth registrar
+RVR="0x9062C0A6Dbd6108336BcBe4593a3D1cE05512069"; // reverse registrar
+RRV='0x5fBb459C49BB06083C33109fA4f14810eC2Cf358'; // reverse resolver
+REG='0xbC8a649C8B3b739b6ea22bb48E1B051b63157eda'; // blabb.eth registrar
+RSV='0xC53eC25c7FaA673C63881036d5a29914449Ed4Af'; // blabb.eth resolver
 
 var web3;
 
 var ENSCon;
 var RevRegCon;
 var RevResolverCon;
-
 var RegistarCon;
 var ResolverCon;
 
-function Ξconnect() {
-  let wsurl = document.getElementById( "WSURLValue" );
-  let val = wsurl.value;
+// because web3.eth.getTransactionCount() bug still not fixed
+// format { acct:nonce, acct2:nonce2, ... }
+var RunningNonces = {};
 
-  if ( !val || val.length == 0 )
-    wsurl.value = "ws://localhost:8546";
-
-  if (    ! /ws:\/\/localhost:\d+$/.test(val)
-       && ! /ws:\/\/[\.\d]+:\d+$/.test(val) ) {
-     wsurl.value = '';
-     return;
-  }
-
-  setTimeout( testWeb3Connection, 250 );
-}
-
-function testWeb3Connection() {
-  let url = document.getElementById( "WSURLValue" ).value;
-  web3 = new Web3( new Web3.providers.WebsocketProvider(url) );
+function Ξconnect( wsurl, errcb, rescb ) {
+  web3 = new Web3( new Web3.providers.WebsocketProvider(wsurl) );
 
   web3.eth.getGasPrice()
   .then( res => {
-    setWeb3StatusIndicator( true );
 
     ENSCon = new web3.eth.Contract( JSON.parse(ENSABI), ENS );
     RevRegCon = new web3.eth.Contract( JSON.parse(RVRABI), RVR );
     RevRegCon.methods.defaultResolver().call()
     .then( (rsv) => {
-      RevResolverCon = new web3.eth.Contract( JSON.parse(RRVABI), rsv );
-    } )
-    .catch( (err) => { console.log(err.toString()) } );
 
-    RegistarCon = new web3.eth.Contract( JSON.parse(REGABI), REG );
-    ResolverCon = new web3.eth.Contract( JSON.parse(RSVABI), RSV );
+      RevResolverCon = new web3.eth.Contract( JSON.parse(RRVABI), rsv );
+      RegistarCon = new web3.eth.Contract( JSON.parse(REGABI), REG );
+      ResolverCon = new web3.eth.Contract( JSON.parse(RSVABI), RSV );
+    } )
+    .catch( (err) => {
+      errcb( err.toString() );
+      return;
+    } );
+
+    rescb();
   } )
   .catch( (err) => {
-    setWeb3StatusIndicator( false );
-    console.log( err.toString() );
+    errcb( err.toString() );
   } );
+}
+
+function ΞnextNonce( addr ) {
+  let acct = addr.toLowerCase();
+
+  if (RunningNonces.acct) {
+    return RunningNonces.acct++;
+  }
+
+  web3.eth.getTransactionCount(acct)
+  .then( cnt => {
+    RunningNonces.acct = parseInt( cnt );
+  } )
+  .catch( err => {console.log(err.toString())} );
+
+  return -1;
 }
 
 function ΞweiToSzabo( wei ) {
@@ -98,12 +104,6 @@ function ΞweiToEth( amtofwei ) {
 function ΞisAddress( sca )
 {
   const deny = /[^0x123456789abcdefABCDEF]/;
-
-  try { sca.startsWith("0x"); }
-  catch(err) {
-    console.log( 'bad sca: ' + sca );
-  }
-
   return    null != sca
          && sca.startsWith("0x")
          && !deny.test(sca)
@@ -142,8 +142,10 @@ function ΞhexToUtf( hexstr ) {
   return web3.utils.hexToUtf8( hexstr );
 }
 
-async function Ξbalance( acct ) {
-  return await web3.eth.getBalance( acct );
+function Ξbalance( acct, errcb, rescb ) {
+  web3.eth.getBalance( acct )
+  .then( bal => { rescb(bal) } )
+  .catch( err => { errcb(err.toString()) } );
 }
 
 function ΞnamekeyFee( cb ) {
@@ -158,7 +160,7 @@ function ΞtopicFee( cb ) {
 
 function ΞnameExists( nametocheck, cb ) {
   RegistarCon.getPastEvents( 'LabelRegistered',
-    {fromBlock:0, toBlock:'latest'} )
+    {fromBlock:FROMBLOCK, toBlock:'latest'} )
   .then( (evts) => {
 
     for (let ii = 0; ii < evts.length; ii++) {
@@ -170,7 +172,7 @@ function ΞnameExists( nametocheck, cb ) {
     }
 
     RegistarCon.getPastEvents( 'TopicRegistered',
-      {fromBlock:0, toBlock:'latest'} )
+      {fromBlock:FROMBLOCK, toBlock:'latest'} )
     .then( (evts) => {
 
       for (ii = 0; ii < evts.length; ii++) {
@@ -200,7 +202,7 @@ function ΞlistNamesForAccount( acct, cb ) {
   let result = [];
 
   RegistarCon.getPastEvents( 'LabelRegistered',
-    { fromBlock: 0, filter: { owner: acct }, toBlock: 'latest' } )
+    { fromBlock: FROMBLOCK, filter: { owner: acct }, toBlock: 'latest' } )
   .then( (evts) => {
     for( ii = 0; ii < evts.length; ii++ ) {
       result.push( evts[ii].returnValues.label );
@@ -214,6 +216,12 @@ function ΞlistNamesForAccount( acct, cb ) {
 async function
 ΞmakeName( acct, newname, val, gasprice, errcb, rescb ) {
 
+  let thenonce = ΞnextNonce( acct );
+  if (thenonce < 0) {
+    errcb( 'no nonce: ' + acct );
+    return;
+  }
+
   let pubstring = getPublicKeyBuff( acct ).toString('hex');
   let x = web3.utils.hexToBytes( "0x" + pubstring.substring(0, 64) );
   let y = web3.utils.hexToBytes( "0x" + pubstring.substring(64) );
@@ -221,7 +229,7 @@ async function
   let calldata = RegistarCon.methods.registerLabelAndKey(
     newname, x, y, acct ).encodeABI();
 
-  let txobj = { nonce: await web3.eth.getTransactionCount(acct),
+  let txobj = { nonce:thenonce,
                 to:REG,
                 value:val,
                 gas:GASREGISTER,
@@ -241,8 +249,10 @@ async function
       RevRegCon.methods.setName( newname + STRINGS[LANG].DAppNamespace )
                .encodeABI();
 
-    let newnonce = await web3.eth.getTransactionCount(acct);
-    txobj = { nonce: newnonce, to:RVR, gas:GASSETNAM, gasPrice:gasprice,
+    txobj = { nonce: ΞnextNonce(acct),
+              to:RVR,
+              gas:GASSETRVN,
+              gasPrice:gasprice,
               data:calldata };
 
     signedTx = await web3.eth.accounts.signTransaction( txobj, priv );
@@ -259,12 +269,42 @@ async function
 
 async function ΞmakeTopic( acct, newtop, val, gasprice, errcb, rescb ) {
 
+  let thenonce = ΞnextNonce( acct );
+  if (thenonce < 0) {
+    errcb( 'no nonce: ' + acct );
+    return;
+  }
+
   let calldata = RegistarCon.methods.registerTopic( newtop, acct ).encodeABI();
 
-  let txobj = { nonce: await web3.eth.getTransactionCount(acct),
-                to:REG,
+  let txobj = { nonce: thenonce,
+                to: REG,
                 value: val,
                 gas: GASTOPIC,
+                gasPrice: gasprice,
+                data: calldata };
+
+  let priv = getPrivateKeyBuff( acct ).toString('hex');
+  let signedTxObj = await web3.eth.accounts.signTransaction( txobj, priv );
+  web3.eth.sendSignedTransaction( signedTxObj.rawTransaction, (err,res) => {
+    if (err) {
+      errcb(err);
+      return;
+    }
+    rescb( res );
+  } );
+}
+
+//
+// TODO: registrar should do this automatically
+//
+async function ΞsetResolver( acct, fqname, gasprice, errcb, rescb ) {
+
+  let node = ΞhexToBytes( namehash.hash(fqname) );
+  let calldata = ENSCon.methods.setResolver( node, acct ).encodeABI();
+  let txobj = { nonce: ΞnextNonce(acct),
+                to:ENS,
+                gas: GASSETRSV,
                 gasPrice: gasprice,
                 data:calldata };
 
@@ -291,7 +331,13 @@ async function
     return;
   }
 
-  let txobj = { nonce: await web3.eth.getTransactionCount(acct),
+  let thenonce = ΞnextNonce( acct );
+  if (thenonce < 0) {
+    errcb( 'no nonce: ' + acct );
+    return;
+  }
+
+  let txobj = { nonce:thenonce,
                 to:toaddr,
                 value:val,
                 data:messagehex,
@@ -314,7 +360,7 @@ function ΞlistTopics( cb ) {
   let result = ['']; // one blank, meaning null or no-topic
 
   RegistarCon.getPastEvents( 'TopicRegistered',
-    {fromBlock: 0, toBlock: 'latest'} )
+    {fromBlock: FROMBLOCK, toBlock: 'latest'} )
   .then( (evts) => {
     for( ii = 0; ii < evts.length; ii++ ) {
       result.push( evts[ii].returnValues.topic );
@@ -326,7 +372,7 @@ function ΞlistTopics( cb ) {
 }
 
 //
-// TODO need a more efficient way to query the blockchain for transactions
+// TODO need a more efficient query
 //
 async function
 ΞretrieveMessages( blockstogoback, toaddr, fromaddr, keywords, cb ) {
@@ -334,9 +380,10 @@ async function
 
   let useto = ΞisAddress( toaddr );
   let usefrom = ΞisAddress( fromaddr );
-
   let blocknum = await web3.eth.getBlockNumber();
+
   let fromblock = (blocknum > blockstogoback) ? (blocknum - blockstogoback) : 0;
+  if (fromblock < 9204018) fromblock = 9204018; // Hello World
 
   for( let ii = fromblock; ii <= blocknum; ii++ ) {
     let blk = await web3.eth.getBlock( ii, true );
@@ -358,8 +405,7 @@ async function
       }
 
       if ( usefrom && fromaddr.toLowerCase() !==
-           blk.transactions[jj].from.toLowerCase() )
-      {
+           blk.transactions[jj].from.toLowerCase() ) {
         continue;
       }
 
@@ -413,7 +459,6 @@ function ΞnameToAddress( name, cb ) {
 
     let resvcon = new web3.eth.Contract( JSON.parse(RSVABI), resvaddr );
     resvcon.methods.addr( node ).call().then( (result) => {
-      console.log( 'resolved ' + name + ' as ' + result );
       if ( cb && ΞisAddress(result))
         cb( result );
     } )
@@ -424,19 +469,25 @@ function ΞnameToAddress( name, cb ) {
 
 function ΞaddressToName( hash, addr, cb ) {
 
-  // TEST values
-  if (    addr.toLowerCase()
-       == '0x8c34F41f1cf2dfe2C28B1Ce7808031c40CE26d38'.toLowerCase() ) {
-    cb( hash, 'admin.blabb.eth' );
-    return;
-  }
-  else if (    addr.toLowerCase()
-            == '0x147b61187F3F16583AC77060cbc4f711AE6c9349'.toLowerCase()) {
-    cb( hash, 'bloggins.blabb.eth' );
-    return;
-  }
+  let acct = addr.toLowerCase();
+  if (acct.startsWith('0x'))
+    acct = acct.substring(2);
 
-  RevResolverCon.methods.name( addr ).call()
+  // TEST values
+  //if ( acct == '8c34F41f1cf2dfe2C28B1Ce7808031c40CE26d38'.toLowerCase() ) {
+  //  cb( hash, 'admin.blabb.eth' );
+  //  return;
+  //}
+  //else
+  //  if ( acct == '147b61187F3F16583AC77060cbc4f711AE6c9349'.toLowerCase()) {
+  //  cb( hash, 'bloggins.blabb.eth' );
+  //  return;
+  //}
+
+  let fqname = acct + '.addr.reverse';
+  let node = ΞhexToBytes( namehash.hash(fqname) );
+
+  RevResolverCon.methods.name( node ).call()
   .then( (res) => {
     if (cb && res && res.length > 0) cb( hash, res );
   } )

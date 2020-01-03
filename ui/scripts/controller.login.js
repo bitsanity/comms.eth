@@ -35,11 +35,20 @@ function doLoadKey() {
 }
 
 function convertPrivateKeyToObj( privkey ) {
+  let acct = global.keythereum.privateKeyToAddress(privkey).toLowerCase();
+
+  // prevent loading key twice and screwing up the nonce
+  if ( null != getPrivateKeyBuff(acct) )
+    return;
+
   let result = {
-    addr : global.keythereum.privateKeyToAddress(privkey).toLowerCase(),
+    addr : acct,
     pubkey : secp256k1.publicKeyCreate(privkey, false).slice(1),
     privkey : privkey
   };
+
+  ΞnextNonce( acct ); // fetches/stores nonce on load
+
   return result;
 }
 
@@ -62,6 +71,7 @@ function doLoadGethKey() {
   }
 
   lkta.value = '';
+  lkta.style.backgroundColor = 'initial';
   loadLocalAccounts();
 }
 

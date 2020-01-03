@@ -121,23 +121,24 @@ broadcast (to topic) features are supported.
 
 1. blabb.eth is dependent on the availability of and access to the Ethereum public blockchain.
 
-2. blabb.eth and all .eth names depend on a set of smart contracts together implementing a service
-   known as Ethereum Name Service (ENS).
+2. blabb.eth and all .eth names depend on a set of smart contracts together implementing a
+   service known as Ethereum Name Service (ENS).
 
-3. This software was developed to run in a browser environment - specifically the nw.js platform.
-   Other platforms (e.g. Google Chrome with MetaMask plugin)  may or may not work correctly.
+3. This software was developed to run in a browser environment - specifically the nw.js
+   platform. Other platforms (e.g. Chrome with MetaMask ) may or may not work correctly.
 
 
 --- Notes ---
 
-1. Developed in/for https://nwjs.io/ environment. Assumes a web3 websocket provider is accessible
-   on port 8546. The URL is a setting.
+1. Developed in/for https://nwjs.io/ environment. Assumes a web3 websocket provider is
+   available. The websocket URL is a setting.
 
 2. The software is constructed to use only the read-only services of a web3 gateway plus
    forwarding raw already-signed transactions. The software does not use unsafe unlock. The
    software does not read local accounts nor does it depend on geth to sign transactions.
 
-3. The message search capability will be more responsive if the web3 gateway is also a full node.
+3. The message search capability will be much more responsive if the web3 gateway is a full
+   node.
 
 4. The blabb.eth client performs ECIES encryption and requires the user's private key to decrypt
    inbound messages.
@@ -157,8 +158,8 @@ broadcast (to topic) features are supported.
 
 2. Anyone may use the blabb.eth software free of charge for any purpose.
 
-3. Anyone may register an ENS name under blabb.eth, or any other ENS domain for a fee paid to the
-   blabb.eth Registrar smart contract.
+3. Anyone may register an ENS name under blabb.eth, or any other ENS domain for a fee paid to
+   the blabb.eth Registrar smart contract.
 
 4. The Registrar requires an amount of value in addition to gas. The required amount is settable
    by the admin and is always readable from the Registrar smart contract.
@@ -172,11 +173,11 @@ MIT License
 
 Copyright (c) 2019 blabb.eth original author, community and contributors
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
-associated documentation files (the "Software"), to deal in the Software without restriction,
-including without limitation the rights to use, copy, modify, merge, publish, distribute,
-sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
-is furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of this
+software and associated documentation files (the "Software"), to deal in the Software without
+restriction, including without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom
+the Software is furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all copies or
 substantial portions of the Software.
@@ -184,19 +185,19 @@ substantial portions of the Software.
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
 BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
 NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 web3.min.js
 
-web3.js is free software: you can redistribute it and/or modify it under the terms of the GNU
-Lesser General Public License as published by the Free Software Foundation, either version
-3 of the License, or (at your option) any later version.
+web3.js is free software: you can redistribute it and/or modify it under the terms of the
+GNU Lesser General Public License as published by the Free Software Foundation, either
+version 3 of the License, or (at your option) any later version.
 
-web3.js is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
-even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Lesser General Public License for more details.
+web3.js is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public License along with web3.js.
 If not, see <http://www.gnu.org/licenses/>.
@@ -204,19 +205,19 @@ If not, see <http://www.gnu.org/licenses/>.
 
 eth-ens-namehash
 
-The blabb.eth client includes https://github.com/danfinlay/eth-ens-namehash published with no
-stated license (as of 12/2019)
+The blabb.eth client includes https://github.com/danfinlay/eth-ens-namehash published with
+no stated license (as of 12/2019)
 
 
 keythereum
 
 Copyright (c) 2015: Jack Peterson.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
-associated documentation files (the "Software"), to deal in the Software without restriction,
-including without limitation the rights to use, copy, modify, merge, publish, distribute,
-sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
-is furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of this
+software and associated documentation files (the "Software"), to deal in the Software without
+restriction, including without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom
+the Software is furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all copies or
 substantial portions of the Software.
@@ -224,8 +225,8 @@ substantial portions of the Software.
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
 BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
 NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 cryptocoinjs/secp256k1-node
@@ -234,26 +235,23 @@ The MIT License (MIT)
 
 Copyright (c) 2014-2016 secp256k1-node contributors
 
-Parts of this software are based on bn.js, elliptic, hash.js
-Copyright (c) 2014-2016 Fedor Indutny
+Parts of this software are based on bn.js, elliptic, hash.js Copyright (c) 2014-2016
+Fedor Indutny
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of this
+software and associated documentation files (the "Software"), to deal in the Software without
+restriction, including without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom
+the Software is furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all copies or
+substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 ecies-parity
@@ -262,11 +260,11 @@ MIT License
 
 Copyright (c) 2018 Age Manning
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
-associated documentation files (the "Software"), to deal in the Software without restriction,
-including without limitation the rights to use, copy, modify, merge, publish, distribute,
-sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
-is furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of this
+software and associated documentation files (the "Software"), to deal in the Software without
+restriction, including without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom
+the Software is furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all copies or
 substantial portions of the Software.
@@ -275,5 +273,4 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
 NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
 DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-` };
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  ` };

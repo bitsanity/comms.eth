@@ -3,6 +3,7 @@ pragma solidity >=0.5.0;
 contract ENSMock {
 
   event NewOwner( bytes32 indexed node, bytes32 indexed label, address owner );
+  event NewResolver( bytes32 indexed node, address resolver );
   event Subnode( bytes32 indexed subnode );
 
   mapping(bytes32=>address) public owners;
@@ -32,6 +33,10 @@ contract ENSMock {
 
     // matches test setup for the registrar
     return address(0x9E8bFcBC56a63ca595C262e1921D3B7a00BB9cF0);
+  }
+
+  function setResolver(bytes32 _node, address _addr ) external {
+    emit NewResolver( _node, _addr );
   }
 
   constructor( address _revreg ) public {

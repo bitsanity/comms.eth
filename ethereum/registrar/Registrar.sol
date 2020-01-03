@@ -1,10 +1,9 @@
 pragma solidity ^0.5.0;
 
-// Forward declarations for external dependencies
-
 interface ENS {
   function owner( bytes32 _node ) external view returns (address);
   function setOwner( bytes32 _node, address _owner ) external;
+  function setResolver( bytes32 _node, address _resolver ) external;
   function setSubnodeOwner( bytes32 _node, bytes32 _label, address _owner )
     external;
 }
@@ -55,9 +54,13 @@ contract Registrar {
   function baseReg( string memory _label, address _owner )
   internal canChange(_label)
   returns (bytes32) {
+
     bytes32 labelhash = keccak256( abi.encodePacked(_label) );
     theENS.setSubnodeOwner( myRootNode, labelhash, address(this) );
-    defaultResolver.setAddr( toNode(_label), _owner );
+    bytes32 node = toNode(_label);
+    theENS.setResolver( node, defaultResolver );
+    defaultResolver.setAddr( node, _owner );
+
     return labelhash;
   }
 
@@ -118,6 +121,7 @@ contract Registrar {
 
   function setResolver( address _newresolver ) external isBeneficiary {
     defaultResolver = Resolver( _newresolver );
+    theENS.setResolver( myRootNode, _newresolver );
   }
 
   function changeDomainOwner( address payable _to ) external isBeneficiary {

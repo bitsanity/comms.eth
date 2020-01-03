@@ -1,13 +1,21 @@
 const fs = require('fs');
 const Web3 = require('web3');
 const web3 =
-  new Web3(new Web3.providers.WebsocketProvider("ws://localhost:8546"));
-//new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+  new Web3(new Web3.providers.HttpProvider("http://localhost:8545")); // test
+//new Web3(new Web3.providers.WebsocketProvider("ws://localhost:8546"));
 
-const MYGASPRICE = '2000000000';
+const MYGASPRICE = '1000000000';
 
-const ENS = '0x314159265dd8dbb310642f98f50c066173c1259b';
-const RSV = '0x465021F80c7cE7560D14c5BB3f96946Ec7D27870';
+// PROD
+//const ENS = '0x314159265dd8dbb310642f98f50c066173c1259b';
+//const RSV = '0x465021F80c7cE7560D14c5BB3f96946Ec7D27870';
+//const REG = '0xbc8a649c8b3b739b6ea22bb48e1b051b63157eda';
+
+// TEST
+const ENS='0x4ebf4321a360533ac2d48a713b8f18d341210078'
+const RSV='0x9e8bfcbc56a63ca595c262e1921d3b7a00bb9cf0'
+const REG='0x3b9b02d76cc7a327adf99255fe39558089614937'
+
 const BLABBHASH =
 '0xc40578c3ef0b4a0ecb769ccacb876251a3693cc47d8def2ea5e4cd3411795e77';
 
@@ -63,6 +71,7 @@ const cmds =
    'sweepEther',
    'sweepToken',
    'changeBeneficiary',
+   'changeDomainOwner',
    'setResolver'
   ];
 
@@ -79,6 +88,7 @@ function usage() {
      '\tsweepEther |\n',
      '\tsweepToken |\n',
      '\tchangeBeneficiary <address> |\n',
+     '\tchangeDomainOwner <address> |\n',
      '\tsetResolver <address> |\n'
   );
 }
@@ -216,6 +226,13 @@ web3.eth.getAccounts().then( (res) => {
         let addr = process.argv[5];
         con.methods.changeBeneficiary( addr )
         .send( {from: eb, gas: 100000, gasPrice: MYGASPRICE} )
+        .catch( err => { console.log(err.toString()) } );
+      }
+      if (cmd == 'changeDomainOwner')
+      {
+        let addr = process.argv[5];
+        con.methods.changeDomainOwner( addr )
+        .send( {from: eb, gas: 200000, gasPrice: MYGASPRICE} )
         .catch( err => { console.log(err.toString()) } );
       }
       if (cmd == 'setResolver')

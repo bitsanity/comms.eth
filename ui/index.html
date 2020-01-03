@@ -73,7 +73,7 @@
       <!-- enough to hold IPv6 "ws://255.255.255.255.255.255:8546" -->
       <input id="WSURLValue"
         type=text class=data size=34 maxlength=33
-          value="ws://localhost:8546" onchange="Ξconnect()" />
+          value="ws://localhost:8546" onchange="wsUrlChanged()" />
     </td>
   </tr>
   <tr>
@@ -99,7 +99,7 @@
   <tr>
     <td class="fieldname" align=right><div id="LastBlocksLabel"/></td>
     <td><input id="LastBlocksField" class="data"
-      type=text size=10 value="1000000"/></td>
+      type=text size=10 value="10000"/></td>
   </tr>
 </table>
 <table>
@@ -369,9 +369,8 @@
 
 <script type="text/javascript">
   window.resizeTo( 850, 700 );
-  Ξconnect();
   setLabels();
-  doSettings();
+  wsUrlChanged();
 </script>
 
 </body>

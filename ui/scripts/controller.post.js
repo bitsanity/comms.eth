@@ -98,11 +98,11 @@ function encryptOptionSelected( yn ) {
 function doPostMessage() {
 
   let acct = document.getElementById( "AddressesCB" ).value;
-  let gasprice = document.getElementById( "GasTextField" ).value + "000000000";
   let encrypt = document.getElementById( "RadioYes" ).checked;
   let topic = document.getElementById( "PostToTopicCB" ).value.trim();
   let toaddr = document.getElementById( "PostToInput" ).value;
   let valinc = valToWei( document.getElementById( "PostValueField" ).value );
+  let gasprice = myGasPriceSetting();
   let message = document.getElementById( "MessageToPostTextArea" ).value;
 
   if (    !ΞisAddress(toaddr)

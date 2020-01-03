@@ -2,7 +2,6 @@ pragma solidity ^0.5.0;
 
 interface ENS {
   function owner( bytes32 _node ) external view returns (address);
-  function owners( bytes32 _node ) external view returns (address);
 }
 
 interface ReverseRegistrar {
@@ -30,7 +29,7 @@ contract Resolver {
   address payable public beneficiary;
 
   modifier owns( bytes32 _node ) {
-    require( msg.sender == theENS.owners(_node) );
+    require( msg.sender == theENS.owner(_node) );
     _;
   }
 
