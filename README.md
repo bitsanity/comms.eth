@@ -5,7 +5,8 @@ and broadcast-to-topic modes.
 
 # Deployment
 
-The public ENS : 0x314159265dd8dbb310642f98f50c066173c1259b
+The (old) public ENS : 0x314159265dd8dbb310642f98f50c066173c1259b
+The (new) public ENS : 0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e
 
 # Dependencies
 

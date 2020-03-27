@@ -18,7 +18,8 @@ var ENS, RVR, REG, RSV;
 //RSV='0x9e8bfcbc56a63ca595c262e1921d3b7a00bb9cf0';
 
 // PROD
-ENS="0x314159265dd8dbb310642f98f50c066173c1259b"; // .eth registrar
+// old ENS="0x314159265dd8dbb310642f98f50c066173c1259b";
+ENS="0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e"; // Ethereum name service
 RVR="0x9062C0A6Dbd6108336BcBe4593a3D1cE05512069"; // reverse registrar
 RRV='0x5fBb459C49BB06083C33109fA4f14810eC2Cf358'; // reverse resolver
 REG='0xbC8a649C8B3b739b6ea22bb48E1B051b63157eda'; // blabb.eth registrar
